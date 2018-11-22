@@ -1,0 +1,38 @@
+ .tabla_kardex{
+    border-spacing: 0;
+    display: flex;/*Se ajuste dinamicamente al tamano del dispositivo**/
+    max-height: 250px; /*El alto que necesitemos**/
+    overflow-y: auto; /**El scroll verticalmente cuando sea necesario*/
+    overflow-x: hidden;/*Sin scroll horizontal*/
+    table-layout: fixed;/**Forzamos a que las filas tenga el mismo ancho**/
+    width: 100%; /*El ancho que necesitemos*/
+    border:1px solid gray;
+}
+
+/*.kardex_thead{
+    background-color: #f1eee9;
+    position: absolute;el thead va ser siempre estatico*
+}
+
+.kardex_th{
+    border-bottom: 1px solid #c4c0c9;
+    border-right: 1px solid #c4c0c9;
+}
+
+.kardex_th,.kardex_td{
+    font-weight: normal;
+    margin: 0;
+    max-width: 140px; Ancho por celda
+    min-width: 85px;Ancho por celda
+    word-wrap: break-word;Si el contenido supera el tamano, adiciona a una nueve linea
+    font-size: 11px;
+    height: 3.5vh !important;El mismo alto para todas las celdas*
+    padding: 4px;
+    border-right: 1px solid #c4c0c9;
+}
+.kardex_tr:nth-child(2n) {
+    background: none repeat scroll 0 0 #edebeb;
+}   
+.kardex_tbody{
+    width:100%;
+}*/

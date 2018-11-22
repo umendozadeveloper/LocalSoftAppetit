@@ -1,0 +1,7 @@
+.jumbotron-MyBackground
+{
+	background-image: url('../img/img3.jpg'); 
+	background-size: cover; /* http://www.w3schools.com/cssref/playit.asp?filename=playcss_background-size&preval=cover */
+	background-position: center; 
+	color: rgb(255,255,255);
+}

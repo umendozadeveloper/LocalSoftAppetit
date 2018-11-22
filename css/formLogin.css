@@ -1,0 +1,32 @@
+html{
+	margin: 0px;
+	padding: 0px;
+}
+.jumbotronLogin
+{
+	padding: 10px 30px;
+	padding-bottom: 60px;
+}
+.container
+{
+	padding: 30px 30px;
+}
+.loginbox{
+	margin: 0px auto;
+        margin-top:100px;
+	width: 320px;
+        border: #004A80 solid 5px;
+	-webkit-border-radius: 40px;
+	-moz-border-radius: 40px;
+        
+}
+
+
+.LogoGuanajuato
+{
+    background-image: url(../img/logo_salud.png);
+    display: block;
+    margin: auto;
+    width: 197px;
+    height: 263px;
+}

@@ -1,0 +1,106 @@
+/* Background Gradient for Monochromatic Colors */
+body
+{
+    background-color: #DDEAFF;
+    /* For WebKit (Safari, Chrome, etc) */
+    background: #DDEAFF -webkit-gradient(linear, left top, left bottom, from(#244D8A), to(#DDEAFF)) no-repeat;
+    /* Mozilla,Firefox/Gecko */
+    background: #DDEAFF -moz-linear-gradient(top, #244D8A, #DDEAFF) no-repeat;
+    /* IE 5.5 - 7 */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#244D8A, endColorstr=#DDEAFF) no-repeat;
+    /* IE 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#244D8A, endColorstr=#244D8A)" no-repeat;
+}
+
+.mi3animacion{
+	height: 100px;
+	width: 100px;
+	background-color: yellow;
+	position: relative;
+}
+.mi3animacion:hover{
+	-webkit-animation: movimientoEjTres 2s 1;
+	-moz-animation: movimientoEjTres 2s 1;
+}
+
+/* CHROME, SAFARI, OPERA */
+@-webkit-keyframes movimientoEjTres{
+	20%, 50%, 80%{
+		transform: translateY(0);
+	}
+	40%{
+		transform: translateY(-30px);
+	}
+	65%{
+		transform: translateY(-15px);
+	}
+}
+@-moz-keyframes movimientoEjTres{
+	20%, 50%, 80%{
+		-moz-transform: translateY(0);
+	}
+	40%{
+		-moz-transform: translateY(-30px);
+	}
+	65%{
+		-moz-transform: translateY(-15px);
+	}
+}
+
+.mi2animacion{
+	width: 100px;
+	height: 100px;
+	position: relative;
+	/* Definir la Animación */
+	-webkit-animation: movimientoEjDos 5s infinite;
+	animation: movimientoEjDos 5s infinite;
+
+	/* Background Gradient for Monochromatic Colors */
+    background-color: #6DF36D;
+    /* For WebKit (Safari, Chrome, etc) */
+    background: #6DF36D -webkit-gradient(linear, 
+    				left top, left bottom,
+    				from(#005A00), to(#6DF36D)) no-repeat;
+    /* Mozilla,Firefox/Gecko */
+    background: #6DF36D -moz-linear-gradient(top, 
+    				#005A00, #6DF36D) no-repeat;
+}
+
+/* CHROME, SAFARI, OPERA */
+@-webkit-keyframes movimientoEjDos{
+	from {left: 0px;}
+	to{left: 200px;}
+}
+/* IE */
+@keyframes movimientoEjDos{
+	from {left: 0px;}
+	to{left: 200px;}
+}
+
+.mianimacion {
+	color: white;
+	font-size: 16px;
+	background-color: red;
+	width: 100px;
+	height: 100px;
+	position: relative;
+
+	-webkit-animation: myfirst 5s; /* Chrome, Safari, Opera */
+	animation: myfirst 5s;			/* IE */
+}
+
+@-webkit-keyframes myfirst{
+	0% {background-color: red; left: 0px; top: 0px;}
+	25% {background-color: blue; left: 50px; top: 0px;}
+	50% {background-color: green; left: 50px; top: 50px;}
+	75% {background-color: yellow; left: 0px; top: 50px;}
+	100% {background-color: red; left: 0px; top: 0px;}
+}
+
+@keyframes myfirst{
+	0% {background-color: red; left: 0px; top: 0px;}
+	25% {background-color: blue; left: 50px; top: 0px;}
+	50% {background-color: green; left: 50px; top: 50px;}
+	75% {background-color: yellow; left: 0px; top: 50px;}
+	100% {background-color: red; left: 0px; top: 0px;}
+}

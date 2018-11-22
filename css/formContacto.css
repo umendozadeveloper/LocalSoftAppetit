@@ -1,0 +1,27 @@
+*{
+	margin: 0px;
+	padding: 0px;
+}
+body{
+	background-color: #f0f0f0;
+	color: #4c4c4c;
+	font-family: 'Asap', sans-serif;
+	font-size: 14px;
+}
+label, input[type="submit"]{
+	margin-top: 6px;
+}
+
+
+.btn:focus{
+	outline: none;
+}
+
+
+.fcontacto{
+	padding: 14px;
+}
+.logo{
+	margin-bottom: 6px;
+	text-align: center;
+}

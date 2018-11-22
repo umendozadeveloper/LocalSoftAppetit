@@ -1,0 +1,39 @@
+@charset "utf-8";
+/* CSS Document */
+
+#container {
+	height: 735px;
+	width: 900px;
+}
+#container #header {
+	background-color: #CCC;
+	height: 100px;
+	width: 900px;
+}
+#container #main {
+	background-color: #09F;
+	height: 35px;
+	width: 900px;
+}
+#container #left {
+	background-color: #09C;
+	float: left;
+	height: 550px;
+	width: 200px;
+}
+#container #container2  p {
+	background-color: #FFF;
+	float: right;
+	height: 550px;
+	width: 700px;
+}
+#container #container2  #content {
+	float: left;
+	height: 550px;
+	width: 500px;
+}
+#container #container2  #right {
+	float: right;
+	height: 550px;
+	width: 500px;
+}

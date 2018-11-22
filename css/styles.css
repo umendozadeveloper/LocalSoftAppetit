@@ -1,0 +1,48 @@
+@charset "utf-8";
+/* CSS Document */
+
+#container {
+	height: 735px;
+	width: 900px;
+	margin-right: auto;
+	margin-left: auto;
+}
+#container #header {
+	height: 100px;
+	width: 900px;
+	background-color: #06F;
+	background-image: url(../imagenes/artilleros.jpg);
+}
+#container #main {
+	background-color: #FFF;
+	height: 35px;
+	width: 900px;
+}
+#container #left {
+	background-color: #09F;
+	float: left;
+	height: 550px;
+	width: 200px;
+}
+#container #container2 {
+	float: right;
+	height: 550px;
+	width: 700px;
+}
+#container #container2 #content {
+	float: left;
+	height: 550px;
+	width: 500px;
+}
+#container #container2 #right {
+	background-color: #09F;
+	float: right;
+	height: 550px;
+	width: 200px;
+}
+#container #footer {
+	background-color: #666;
+	height: 50px;
+	width: 900px;
+	clear: both;
+}

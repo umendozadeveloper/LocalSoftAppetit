@@ -1,0 +1,157 @@
+#table-scroll {
+width: 500px;
+height: 100px;
+overflow: auto;
+}
+
+table, td, th {
+border: rgba(193, 193, 193, 0.48) 1px solid;
+}
+
+
+#fixedY{
+position: relative;
+top: 0;
+z-index: 99;
+background-color: red;
+}
+
+
+#fixedY table{
+border-collapse: collapse;
+width: 900px;
+}
+
+
+#fixedY table th, #fixedY table td {
+width: 25%;
+}
+
+
+#fixedY table th {
+background-color: red;
+font: bold 15px Tahoma, Geneva, sans-serif;
+color: rgb(255, 255, 255);
+}
+
+
+#cuerpoDatos {
+width: 900px;
+}
+
+#cuerpoDatos > div{
+float: left;
+}
+
+
+#cuerpoDatos > div#fixedX{
+width: 25%;
+position: relative;
+left: 0;
+z-index: 98;
+background-color: yellow;
+}
+
+#cuerpoDatos > div#fixedX table{
+border-collapse: collapse;
+width: 100%;
+}
+
+
+#cuerpoDatos > div#nofixedX{
+width: 75%;
+}
+
+#cuerpoDatos > div#nofixedX table{
+border-collapse: collapse;
+width: 100%;
+}
+
+#cuerpoDatos > div#nofixedX table td {
+width: 33%;
+}
+
+#table-scroll {
+width: 500px;
+height: 100px;
+overflow: auto;
+}
+
+table, td, th {
+border: rgba(193, 193, 193, 0.48) 1px solid;
+}
+
+
+#fixedY{
+position: relative;
+top: 0;
+z-index: 99;
+background-color: red;
+}
+
+
+#fixedY table{
+border-collapse: collapse;
+width: 900px;
+}
+
+
+#fixedY table th, #fixedY table td {
+width: 25%;
+}
+
+
+#fixedY table th {
+background-color: red;
+font: bold 15px Tahoma, Geneva, sans-serif;
+color: rgb(255, 255, 255);
+}
+
+
+#cuerpoDatos {
+width: 900px;
+overflow: hidden; 
+}
+
+#cuerpoDatos > div{
+float: left;
+}
+
+
+#cuerpoDatos > div#fixedX{
+width: 25%;
+position: relative;
+left: 0;
+z-index: 98;
+background-color: yellow;
+}
+
+#cuerpoDatos > div#fixedX table{
+border-collapse: collapse;
+width: 100%;
+}
+
+
+#cuerpoDatos > div#nofixedX{
+width: 75%;
+}
+
+#cuerpoDatos > div#nofixedX table{
+border-collapse: collapse;
+width: 100%;
+}
+
+#cuerpoDatos > div#nofixedX table td {
+width: 33%;
+}
+
+	#corner{
+	font: bold 15px/120% Tahoma, Geneva, sans-serif;
+	text-align: center; 
+	border: orange 2px solid;
+	background-color: orange; 
+	position: fixed; 
+	top: default; 
+	margin-top: -1.5em; 
+	z-index: 2147483647; 
+	}
