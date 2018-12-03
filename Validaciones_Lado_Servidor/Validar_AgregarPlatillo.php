@@ -7,6 +7,7 @@ include_once '../Clases/SubMenu.php';
 include_once '../Clases/PlatillosSubMenu.php';
 include_once '../Clases/Sommelier.php';
 include_once '../Clases/Vino.php';
+include_once '../Clases/ProductoCompuesto.php';
 
 class AgregaPlatillo{
     public $errores;
@@ -15,6 +16,7 @@ class AgregaPlatillo{
     public $objPlatillosSubMenu;
     public $objVino;
     public $objSommelier;
+    private $objProductoCompuesto;
             
             
     function __construct() {
@@ -27,12 +29,17 @@ class AgregaPlatillo{
         $rutaIco = "";
         $foto = "";
         $icono = "";
+        
         if(isset($_POST['txtNombrePlatillo'])){
             $this->objPlatillo->Nombre = $_POST['txtNombrePlatillo'];
         }
         else{
             array_push($this->errores,"Ingresar nombre de platillo");
         }
+        if(isset($_POST['txtTope'])){
+            $this->objPlatillo->Tope = $_POST['txtTope'];
+        }
+        
         
         if(isset($_POST['txtDescripcionCorta'])){
             $this->objPlatillo->DescripcionCorta = $_POST['txtDescripcionCorta'];
@@ -99,6 +106,13 @@ class AgregaPlatillo{
         else{
             array_push($this->errores,"Es necesario seleccionar una opción en agregar sommelier");
         }
+        if(isset($_POST['cmbProductoCompuesto'])){
+            $this->objPlatillo->Compuesto = $_POST['cmbProductoCompuesto'];
+            $banderaCompuesto = $this->objPlatillo->Compuesto;
+        }
+        else{
+            array_push($this->errores,"Es necesario seleccionar una opción en producto compuesto ");
+        }
         if(isset($_POST['cmbTiempo'])){
             $this->objPlatillo->IdTiempo = $_POST['cmbTiempo'];
         }
@@ -112,23 +126,25 @@ class AgregaPlatillo{
             }
             header("Location: ../F_A_RegistrarPlatillo.php");
         }
-        else{
+        else{ 
+                $arregloProductos = json_decode($_POST['txtArrayProductos']);
                 $_SESSION['valNombre'] = $this->objPlatillo->Nombre;
                 $_SESSION['valDescripcionCorta'] = $this->objPlatillo->DescripcionCorta;
                 $_SESSION['valDescripcionLarga'] = $this->objPlatillo->DescripcionLarga;
                 $_SESSION['valPrecio'] = $this->objPlatillo->Precio;
-
                 $_SESSION['valIcono'] = $rutaIco;
                 $_SESSION['valFoto'] = $ruta;  
                 $_SESSION['valIVA'] = $this->objPlatillo->Iva;
                 $_SESSION['valTiempo'] = $this->objPlatillo->IdTiempo;
-                
+                $_SESSION['valArrayProductos' ] = $arregloProductos;
+                $_SESSION['valTope' ] = $this->objPlatillo->Tope;
+               
                 if($this->objPlatillo->Insertar($this->objPlatillo->Nombre,
                         $this->objPlatillo->DescripcionCorta,
                         $this->objPlatillo->DescripcionLarga,
                         $this->objPlatillo->Precio, $this->objPlatillo->Icono,
                         $this->objPlatillo->Foto, $this->objPlatillo->Iva, 
-                        $this->objPlatillo->IdTiempo)){
+                        $this->objPlatillo->IdTiempo, $this->objPlatillo->Compuesto, $this->objPlatillo->Tope)){
                         
                         if($foto!=""){
                             copy($ruta, $this->objPlatillo->Foto);
@@ -163,17 +179,28 @@ class AgregaPlatillo{
                                 }
                             }
                         }
+                        if($banderaCompuesto==1){
+                             $this->objProductoCompuesto = new ProductoCompuesto();
+                            foreach($arregloProductos as $producto){
+                                $this->objProductoCompuesto->Insertar($this->objPlatillo->ID, 0, $producto->IdSubProducto, $producto->IdTipoSubProducto, $producto->Cantidad);
+                                
+                            }
+               
+                        }
                         
                 $_SESSION['valNombre'] = null;
                 $_SESSION['valDescripcionCorta'] = null;
                 $_SESSION['valDescripcionLarga'] = null;
                 $_SESSION['valPrecio'] = null;
-               $_SESSION['valIVA'] = null;
+                $_SESSION['valIVA'] = null;
                 $_SESSION['valIcono'] = null;
                 $_SESSION['valFoto'] = null;
                 $_SESSION['valTiempo'] = null;
+                $_SESSION['valArrayProductos'] = null;
+                $_SESSION['valTope'] = null;
                 setSuccessMessage("Platillo registrado correctamente");
                 header("Location: ../F_A_DetalleAlimento.php?IdPlatillo=".$this->objPlatillo->ID);
+                
                 }
                 
             else

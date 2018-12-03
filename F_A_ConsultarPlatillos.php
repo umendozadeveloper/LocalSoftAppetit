@@ -36,6 +36,7 @@
                                 <th><div class="centrar"><label>Visible</label></div></th>
                                 <th><div class="centrar"><label>Sommelier</label></div></th>
                                 <th><div class="centrar"><label>Menús</label></div></th>
+                                <th><div class="centrar"><label>Compuesto</label></div></th>
                                 <th><div class="centrar"><label>Opciones</label></div></th>
                                 
             
@@ -62,7 +63,7 @@
                         echo "<td>"
                        . "<button value='$p->ID'"
                        . " name='IdPlatillo' type='submit' class='noboton editarPlatilloCuerpo' data-placement='right' data-toggle='tooltip' title='Editar datos'>"
-                       . " $p->Nombre</button></td>";
+                       . " $p->Nombre </button></td>";
                         echo "<td><div class='imagenesTabla'><img class='' src='$p->Foto'></div></td>";
                         echo "<td><div class='imagenesTabla'><img class='' src='$p->Icono'></div></td>";
                         
@@ -93,6 +94,14 @@
                         }
                         echo "</td>";
                         
+                        echo "<td><center>";
+                        if($p->Compuesto){
+                            echo "Sí";
+                        }else{
+                            echo "No";
+                        }
+                        echo "</td>";
+                        
                         echo "<td>";
                         echo "<button class='btn btn-Bixa' value='$p->ID' "
                        . " name='IdPlatillo' data-toggle='tooltip' data-placement='left' title='Editar datos'><span class='glyphicon glyphicon-edit'></span>"
@@ -100,7 +109,7 @@
                          echo "<button class='btn btn-Bixa' type='button' value='$p->ID' onclick='eliminarPlatillo($p->ID);' name='btnClasificador' data-placement='left' data-toggle='tooltip' title='Eliminar'><span class='glyphicon glyphicon-trash'></span></button>";
                         
                         echo "<a class='btn btn-Bixa' href='F_A_DetalleAlimento.php?IdPlatillo=$p->ID' "
-                       . "  data-toggle='tooltip' data-placement='left' title='Editar datos'><span class='glyphicon glyphicon-search'></span></a>";
+                       . "  data-toggle='tooltip' data-placement='left' title='Ver a detalle'><span class='glyphicon glyphicon-search'></span></a>";
                         echo "</td>";
                         
                         echo "</tr>";
@@ -167,7 +176,7 @@
         
         $('.myCheck').each(function(){
             $('.myCheck').bootstrapSwitch();
-        })
+        });
         
                     
         

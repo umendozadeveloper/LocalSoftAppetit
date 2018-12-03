@@ -16,6 +16,8 @@ class Platillo {
     public $Prioridad;
     public $Iva;
     public $IdTiempo;
+    public $Compuesto;
+    public $Tope;
 
 
 
@@ -40,7 +42,7 @@ class Platillo {
 
 
     public function Insertar($nombre, $descripcionCorta, $descripcionLarga, $precio,
-            $icono, $foto,$iva,$id_tiempo) 
+            $icono, $foto,$iva,$id_tiempo,$compuesto=false,$tope=null) 
     {
         $this->Nombre = $nombre;
         $this->DescripcionCorta = $descripcionCorta;
@@ -52,14 +54,16 @@ class Platillo {
         $this->Precio = $precio;
         $this->Visible = 1;
         $this->IdTiempo = $id_tiempo;
+        $this->Compuesto = $compuesto;
+        $this->Tope = $tope;
         $objSQL = new SQL_DML();
         $resultado = $objSQL->GetScalar("select MAX (ID) as ID from Platillos");
         $query = "insert into Platillos " .
 
-                "(ID,Nombre,DescripcionCorta,DescripcionLarga,Precio,Icono,Foto,Visible,Iva,IdTiempo) " .
+                "(ID,Nombre,DescripcionCorta,DescripcionLarga,Precio,Icono,Foto,Visible,Iva,IdTiempo,Compuesto,Tope) " .
                 "values (" . $resultado . ",'$this->Nombre','$this->DescripcionCorta',"
                 . "'$this->DescripcionLarga',$this->Precio,'$this->Icono','$this->Foto','$this->Visible'"
-                . ", '$this->Iva', '$this->IdTiempo')";
+                . ", '$this->Iva', '$this->IdTiempo','$this->Compuesto','$this->Tope')";
 
         if ($objSQL->Execute($query)) {
             $this->ID = $resultado;
@@ -88,6 +92,7 @@ class Platillo {
             $objPlatillo->Visible = utf8_encode($Datos ['Visible']);
             $objPlatillo->Prioridad = utf8_encode($Datos ['Prioridad']);
             $objPlatillo->IdTiempo = utf8_encode($Datos['IdTiempo']);
+            $objPlatillo->Compuesto = utf8_encode($Datos['Compuesto']);
             array_push($platillos, $objPlatillo);
         }
         return $platillos;
@@ -111,6 +116,7 @@ class Platillo {
             $this->Foto = utf8_encode(substr($Datos ['Foto'],3));
             $this->ValorEstrellas = utf8_encode($Datos ['ValorEstrellas']);
             $this->IdTiempo = utf8_encode($Datos['IdTiempo']);
+            $this->Compuesto = utf8_encode($Datos['Compuesto']);
             $res = true;
         }
         return $res;

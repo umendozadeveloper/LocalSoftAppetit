@@ -14,6 +14,7 @@
                 include_once './Clases/SubMenu.php';
                 include_once './Clases/PlatillosSubMenu.php';
                 include_once './Clases/Tiempos.php';
+                include_once './Clases/ProductoCompuesto.php';
                 $objPlatillo = new Platillo();
               
                 $objPlatillo->ConsultarPorID($IdPlatillo);  
@@ -125,6 +126,74 @@
                             ?>
 
                         </tr>
+                          <tr>
+                            <td> <label></label></td>
+                        </tr>
+                          <tr>
+                            <td> <label></label></td>
+                        </tr>
+                        <tr>
+                            <td><div class="etiquetas2">¿Es producto compuesto?</div></td>
+                            <td>
+                                <select disabled class='input-group form-control'>
+                                    <?php 
+                                    echo "<option>";
+                                    if($objPlatillo->Compuesto){
+                                        echo "Sí";
+                                    }
+                                    else{
+                                        echo "No";
+                                    }
+                                    echo "</option>";
+                                    ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <?php
+                        if ($objPlatillo->Compuesto) {
+                            ?>
+                        
+                        <tr>
+                            <td> <label></label></td>
+                        </tr>
+                          <tr>
+                            <td> <label></label></td>
+                        </tr>
+                        <tr>
+                            <td> <label></label></td>
+                        </tr>
+                          <tr>
+                            <td> <label></label></td>
+                        </tr>
+                            <tr>
+                            <table  class="tablesorter table-bordered table-responsive tablaPaginado tablaConsulta" cellspacing="0" width="100%" >
+                                <thead style="margin-bottom: 10px;">
+
+                                    <tr>
+                                        <th style=""><div class="centrar"><label>Nombre</label></div></th>
+                                        <th style=""><div class="centrar"><label>Cantidad</label></div></th>                    
+                                        <th style=""><div class="centrar"><label>Tipo</label></div></th>                         
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $compuesto = new ProductoCompuesto();
+                                    $productos = $compuesto->ConsultarPorIDProducto_IDTipo($objPlatillo->ID, 0);
+                                    foreach($productos as $pc){
+                                        echo "<tr>";
+                                        echo "<td>$pc->Nombre</td>";
+                                        echo "<td>$pc->Cantidad</td>";
+                                        echo "<td>$pc->Tipo</td>";
+                                        echo "</tr>";
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                        <?php
+                    }
+                    ?>
+                        </tr>
                     </table>
                 </div>
                         
@@ -150,6 +219,8 @@
               </select>
           </div>
     </tr> 
+                
+ 
                         
                 </table>
                 </div>
