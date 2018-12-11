@@ -74,7 +74,7 @@ class AgregaPlatillo{
         if(isset($_FILES['archivoIco'])){
             $icono = $_FILES['archivoIco']['name'];
             $extensionIco = explode(".", $icono);
-            $destinoIco ="../bd_Fotos/Platillos/".  $this->objPlatillo->obtenerId()."Ico.".$extensionIco[1]."";
+            $destinoIco ="../bd_Fotos/Platillos/".  $this->objPlatillo->obtenerId()."_".rand(0,999999)."_Ico.".$extensionIco[1]."";
             $rutaIco = $_FILES['archivoIco']['tmp_name'];
             $this->objPlatillo->Icono = $destinoIco;
         }
@@ -85,7 +85,7 @@ class AgregaPlatillo{
         if(isset($_FILES['archivo'])){
             $foto = $_FILES['archivo']['name'];
             $extensionFoto = explode(".", $foto);
-            $destino ="../bd_Fotos/Platillos/".  $this->objPlatillo->obtenerId()."Foto.".$extensionFoto[1]."";
+            $destino ="../bd_Fotos/Platillos/".  $this->objPlatillo->obtenerId()."_".rand(0,999999)."Foto.".$extensionFoto[1]."";
             $ruta = $_FILES['archivo']['tmp_name'];
             $this->objPlatillo->Foto = $destino;
         }

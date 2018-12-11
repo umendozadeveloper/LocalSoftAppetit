@@ -3,8 +3,14 @@
           require 'Header.php';
           
           
-          ?>                
+          ?>            
+
             <title>Editar Vino</title>
+            
+            <script>
+                var arregloCompuesto = [];
+                let alimentoCompuesto = {};
+            </script>
         <?php
           
         
@@ -13,6 +19,7 @@
         include_once './Clases/Maridaje.php';
         include_once './Clases/SubMenu.php';
         include_once './Clases/VinosSubMenu.php';
+        include_once './Clases/ProductoCompuesto.php';
         ?>
         
         <script>
@@ -181,7 +188,7 @@
         
         
         <?php
-        
+            $productos = [];
             if(isset($_POST['btnAceptar']) || isset($_GET['IdVino'])){
                 if(isset($_POST['btnAceptar'])&& $_POST['btnAceptar']){
                     $idPlatilloEd= $_REQUEST['btnAceptar'];
@@ -195,16 +202,35 @@
                         
                 }
                 $objVino = new Vino();
-                $objVino->ConsultarPorID($idPlatilloEd);                
+                $objVino->ConsultarPorID($idPlatilloEd);
+                
+                
+                if ($objVino->Compuesto) {
+    $compuesto = new ProductoCompuesto();
+    $productos = $compuesto->ConsultarPorIDProducto_IDTipo($objVino->ID, 1);
+    foreach($productos as $cp){
+        
+    
+    ?>
+    <script>
+        
+    alimentoCompuesto = {IdSubProducto : <?php echo $cp->IdSubProducto;?>, IdTipoSubProducto : <?php echo $cp->IdTipoSubProducto;?>, Cantidad:<?php echo $cp->Cantidad;?>, Nombre:'<?php echo $cp->Nombre;?>'};
+    arregloCompuesto.push(alimentoCompuesto); 
+    
+    </script>
+                <?php }
+                
+    }
                 
             }
-            else
-                header("Location: F_A_ConsultarVinos.php");
-            
+            else{
+                header("Location: F_A_ConsultarVinos.php");            
+            }
 
             ?>
             
             <form action="Validaciones_Lado_Servidor/Validar_EditarVino.php" method="POST" enctype="multipart/form-data" name="form" id="form">
+                <input type='hidden' id='txtArrayProductos'  name='txtArrayProductos'    class='form-control' value=''>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <table class="encabezadoTabla">
             <td class="tdEncabezadoTabla">
@@ -403,8 +429,8 @@
     <tbody>
         <?php
 
-        $objVino = new Platillo();
-        $platillos = $objVino->ConsultarTodo();
+        $objPlatillo = new Platillo();
+        $platillos = $objPlatillo->ConsultarTodo();
         $objMaridaje = new Maridaje();
         foreach($platillos as $p){
             $maridaje = $objMaridaje->ConsultarPorIds($p->ID,$idPlatilloEd);
@@ -467,6 +493,72 @@
                         </div>
                     </div>
                 
+                
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-offset-1 col-lg-10">
+
+        <div class="etiquetas2">¿Es un producto compuesto? </div>
+        <div class='campos  '>
+            <select class="form-control" id='cmbProductoCompuesto' name="cmbProductoCompuesto">
+                <option value="0"   <?php if(!$objVino->Compuesto){ echo "selected";}?>   >No</option>
+                <option value="1" <?php if($objVino->Compuesto){ echo "selected";}?>  >Si</option>
+            </select>
+        </div>
+    </div>     
+
+
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-offset-1 col-lg-10 ocultar " id='tablaProductoCompuesto'>
+        <div style="width: 100%; overflow-x: auto;">
+            <table  class="table table-bordered">
+                <thead class="EncabezadoTablaPersonalizada">
+                    <tr>
+
+                        <th><a type="button" class="" style="float:left" data-toggle='modal' data-target='#VMProductoCompuesto'>
+                                <span class='glyphicon glyphicon-plus-sign' style='font-size:22px; color:#419C67; cursor:pointer'></span>
+                            </a></th>
+                        <th colspan="" style="text-align: center;">
+                            
+                            
+                        </th>
+                        <th>
+                               Tope de productos por paquete
+                
+
+                        <div class=''><input type='text' id='txtTope'  name='txtTope'    class='form-control' value='<?php echo $objVino->Tope;?>'></div>
+                </th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th style="">Nombre del producto</th>
+                        <th style="text-align: center;">Cantidad tope de producto por paquete</th>    
+                    </tr>
+                </thead>
+                <tbody id="tablaProductoAgregados">
+                 
+                 <?php
+                                    
+                                    foreach($productos as $pc){
+                                        echo "<tr>";
+                                        //onclick=\"BorrarProductoCompuesto('"+arregloCompuesto[i].IdTipoSubProducto+"','"+arregloCompuesto[i].IdSubProducto+"'
+                                        echo "<td><a onclick=\"BorrarProductoCompuesto('$pc->IdTipoSubProducto','$pc->IdSubProducto')\"><span class='glyphicon glyphicon-minus-sign' style='font-size:22px; color:#AB1414; cursor:pointer'></span></a></td>";
+                                        echo "<td>$pc->Nombre</td>";
+                                        echo "<td>$pc->Cantidad</td>";                                        
+                                        echo "</tr>";
+                                    }
+                                    ?>
+                
+                        
+                </tbody>
+            </table>
+        </div>
+        
+        
+           
+               
+            
+    </div>
+                
+                
+                
                     
                     
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-offset-1 col-lg-10">
@@ -484,6 +576,144 @@
         
     </body>
     
+    
     <script>
-    </script>
+            var tope = <?php echo $objVino->Tope;?>;
+            
+    $("button[name='btnAgregarCompuesto']").click(function () {
+        let eleccion = $("#cmbCompuesto option:selected").val(); //0 platillos, 1 bebidas
+        var urlAjax = "";
+        $("#tableConsulta").addClass("mostrar");
+        if (eleccion === 0) {
+        //    urlAjax = "Validaciones_Lado_Servidor/Ajax/N_A_ConsultarPlatillos.php";
+        }
+        $.ajax({
+            url: "Validaciones_Lado_Servidor/Ajax/N_A_ConsultarProductos.php",
+            type: 'POST',
+            data: {"Tipo": eleccion},
+            success: function (data) {
+                var response = data;
+                $("#divConsulta").html(response);
+                $("#tableConsulta").DataTable();
+            }
+        });
+        
+        
+    });
+    
+    
+    $("#txtTope").change(function (){
+       let cantidad = tope;
+       tope = $("#txtTope").val();
+       let mayor = ObtenerMayorCantidad();
+       if(!parseInt(tope,10)){
+           swal('Error','El valor no es numérico','error');
+           $("#txtTope").val(cantidad);   
+       }
+       
+       else if(tope < ObtenerMayorCantidad()){
+           swal('Error', 'Hay un producto con cantidad = '+mayor+' que rebasa la cantidad tope que está tratando de asignar('+tope+') por lo tanto se quedará el antiguo valor, verifique los datos e intente nuevamente');
+           $("#txtTope").val(cantidad);
+       }
+       
+       
+       
+    });
+    
+    function ObtenerMayorCantidad(){
+        
+        let cantidadMayor = 0;
+        for(let i = 0; i< arregloCompuesto.length; i++){
+            if(arregloCompuesto[i].Cantidad>cantidadMayor){
+                cantidadMayor = arregloCompuesto[i].Cantidad;
+            }
+        }
+        return cantidadMayor; 
+        
+    }
+    
+    
+    function AgregarProductoCompuesto(id, tipo,nombre){  //ID del producto, Tipo 0 = Alimento, 1 = Bebida
+       
+        
+        if(!(tope && tope>0)){
+            swal('Error','Debe asignar un tope al producto principal antes de agregar productos','error');
+            return;
+        }
+            
+        let valor = parseInt(prompt("Ingresar cantidad de productos", "0"), 10);
+        
+        if(valor && valor>0){
+            
+            if(valor <= tope){
+                let eleccion = $("#cmbCompuesto option:selected").val(); //0 platillos, 1 bebidas 
+                let alimentoCompuesto = {IdSubProducto : id, IdTipoSubProducto : tipo, Cantidad:valor, Nombre:nombre};
+                arregloCompuesto.push(alimentoCompuesto);
+                ActualizarTablaProductoCompuesto();
+                swal('Correcto','Producto agregado','success');
+            }
+            else{
+                swal('Error', 'La cantidad ingresada ('+valor+') sobrepasa el tope ('+tope+') del producto','error');
+            }
+        }
+        else{
+            swal('Error','Ingresar valor numérico entero mayor a 0','error');
+        }
+    }
+                                                        
+                                                        
+                                                        
+                                                        
+            function BorrarProductoCompuesto(IdTipo, IdSubProducto){                
+                for(let i = 0; i< arregloCompuesto.length; i++){
+                    if(arregloCompuesto[i].IdSubProducto==IdSubProducto && arregloCompuesto[i].IdTipoSubProducto==IdTipo){
+                        arregloCompuesto.splice(i,1);
+                        break;
+                    }
+                }
+                ActualizarTablaProductoCompuesto();
+            }
+            
+            
+            function ActualizarTablaProductoCompuesto(){
+                let tabla = "";
+                $("#txtArrayProductos").val(JSON.stringify(arregloCompuesto));
+                for(let i = 0; i<arregloCompuesto.length; i++){
+                    tabla+="<tr>";   
+                    tabla+="<td><a onclick=\"BorrarProductoCompuesto('"+arregloCompuesto[i].IdTipoSubProducto+"','"+arregloCompuesto[i].IdSubProducto+"')\"><span class='glyphicon glyphicon-minus-sign' style='font-size:22px; color:#AB1414; cursor:pointer'></span></a></td>";
+
+                    tabla+="<td>"+arregloCompuesto[i].Nombre+"</td>";
+                    tabla+="<td>"+arregloCompuesto[i].Cantidad+"</td>";
+                    tabla+="</tr>";
+                }
+                if(arregloCompuesto.length==0){
+                    tabla="<th colspan='4'><center>No se encontraron registros</center></th>";
+                }
+                $("#tablaProductoAgregados").html(tabla);        
+            }
+            
+            
+            function mostrarTabla(){
+                if ($("#cmbProductoCompuesto").val() == 1) {
+                    $("#tablaProductoCompuesto").removeClass("ocultar");
+                    $("#tablaProductoCompuesto").addClass("mostrar");
+                } else {
+                    $("#tablaProductoCompuesto").removeClass("mostrar");
+                    $("#tablaProductoCompuesto").addClass("ocultar");
+
+                }
+            }
+        
+            $(document).ready(function (){
+                
+                $("#txtArrayProductos").val(JSON.stringify(arregloCompuesto));
+                $("#cmbProductoCompuesto").change(function () {
+                    mostrarTabla();
+               });
+
+               mostrarTabla();
+            });
+            </script>
+    
+    
 </html>

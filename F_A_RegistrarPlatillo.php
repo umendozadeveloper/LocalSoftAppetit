@@ -11,7 +11,7 @@ include_once './Clases/Tiempos.php';
 
 
 <title>Registrar Platillo</title>
-    <script>
+    <script><!--Productos compuestos-->
         var arregloCompuesto = [];
     </script>
 
@@ -58,7 +58,7 @@ if (!isset($_SESSION['valNombre']) && (empty($_SESSION['valNombre']))) {
 }
 
 
-
+//Input producto compuesto
 if (!isset($_SESSION['valArrayProductos']) && (empty($_SESSION['valArrayProductos']))) {
     echo "<input type='hidden' id='txtArrayProductos'  name='txtArrayProductos'    class='form-control' value=''>";
 } else {
@@ -469,7 +469,7 @@ foreach ($vinos as $v) {
     </div>
 
 
-
+<!-- Div producto compuesto-->
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-offset-1 col-lg-10">
 
         <div class="etiquetas2">¿Es un producto compuesto?</div>
@@ -481,7 +481,7 @@ foreach ($vinos as $v) {
         </div>
     </div>     
 
-
+<!--Tabla producto compuesto-->
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-offset-1 col-lg-10 ocultar " id='tablaProductoCompuesto'>
         <div style="width: 100%; overflow-x: auto;">
             <table  class="table table-bordered">
@@ -549,7 +549,7 @@ foreach ($vinos as $v) {
 
 
 
-<!-- Ventana Modal Para Mesas-->
+<!-- Ventana Modal Para Producto Compuesto-->
 <div class="modal fade" id="VMProductoCompuesto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -604,126 +604,11 @@ foreach ($vinos as $v) {
 
 </body>
 
-<!--Script para consultar listado de platillos o bebidas segun la elección del usuario-->
-<script>
-    var tope = 0;
-    $("button[name='btnAgregarCompuesto']").click(function () {
-        let eleccion = $("#cmbCompuesto option:selected").val(); //0 platillos, 1 bebidas
-        var urlAjax = "";
-        $("#tableConsulta").addClass("mostrar");
-        if (eleccion === 0) {
-        //    urlAjax = "Validaciones_Lado_Servidor/Ajax/N_A_ConsultarPlatillos.php";
-        }
-        $.ajax({
-            url: "Validaciones_Lado_Servidor/Ajax/N_A_ConsultarProductos.php",
-            type: 'POST',
-            data: {"Tipo": eleccion},
-            success: function (data) {
-                var response = data;
-                $("#divConsulta").html(response);
-                $("#tableConsulta").DataTable();
-            }
-        });
-        
-        
-    });
-    
-    
-    $("#txtTope").change(function (){
-       let cantidad = tope;
-       tope = $("#txtTope").val();
-       let mayor = ObtenerMayorCantidad();
-       if(!parseInt(tope,10)){
-           swal('Error','El valor no es numérico','error');
-           $("#txtTope").val(cantidad);   
-       }
-       
-       else if(tope < ObtenerMayorCantidad()){
-           swal('Error', 'Hay un producto con cantidad = '+mayor+' que rebasa la cantidad tope que está tratando de asignar('+tope+') por lo tanto se quedará el antiguo valor, verifique los datos e intente nuevamente');
-           $("#txtTope").val(cantidad);
-       }
-       
-       
-       
-    });
-    
-    function ObtenerMayorCantidad(){
-        
-        let cantidadMayor = 0;
-        for(let i = 0; i< arregloCompuesto.length; i++){
-            if(arregloCompuesto[i].Cantidad>cantidadMayor){
-                cantidadMayor = arregloCompuesto[i].Cantidad;
-            }
-        }
-        return cantidadMayor; 
-        
-    }
-    
-    
-    function AgregarProductoCompuesto(id, tipo,nombre){  //ID del producto, Tipo 0 = Alimento, 1 = Bebida
-       
-        
-        if(!(tope && tope>0)){
-            swal('Error','Debe asignar un tope al producto principal antes de agregar productos','error');
-            return;
-        }
-            
-        let valor = parseInt(prompt("Ingresar cantidad de productos", "0"), 10);
-        
-        if(valor && valor>0){
-            
-            if(valor <= tope){
-                let eleccion = $("#cmbCompuesto option:selected").val(); //0 platillos, 1 bebidas 
-                let alimentoCompuesto = {IdSubProducto : id, IdTipoSubProducto : tipo, Cantidad:valor, Nombre:nombre};
-                arregloCompuesto.push(alimentoCompuesto);
-                ActualizarTablaProductoCompuesto();
-                swal('Correcto','Producto agregado','success');
-            }
-            else{
-                swal('Error', 'La cantidad ingresada ('+valor+') sobrepasa el tope ('+tope+') del producto','error');
-            }
-        }
-        else{
-            swal('Error','Ingresar valor numérico entero mayor a 0','error');
-        }
-    }
-    
-    
-    function BorrarProductoCompuesto(IdTipo, IdSubProducto){
-        console.log("Id Tipo: ", IdTipo);
-        console.log("Id Sub: ", IdSubProducto);
-        for(let i = 0; i< arregloCompuesto.length; i++){
-            if(arregloCompuesto[i].IdSubProducto==IdSubProducto && arregloCompuesto[i].IdTipoSubProducto==IdTipo){
-                arregloCompuesto.splice(i,1);
-                break;
-            }
-        }
-        ActualizarTablaProductoCompuesto();
-    }
-    
-    
-    function ActualizarTablaProductoCompuesto(){
-        let tabla = "";
-        $("#txtArrayProductos").val(JSON.stringify(arregloCompuesto));
-        for(let i = 0; i<arregloCompuesto.length; i++){
-            tabla+="<tr>";   
-            tabla+="<td><a onclick=\"BorrarProductoCompuesto('"+arregloCompuesto[i].IdTipoSubProducto+"','"+arregloCompuesto[i].IdSubProducto+"')\"><span class='glyphicon glyphicon-minus-sign' style='font-size:22px; color:#AB1414; cursor:pointer'></span></a></td>";
-            
-            tabla+="<td>"+arregloCompuesto[i].Nombre+"</td>";
-            tabla+="<td>"+arregloCompuesto[i].Cantidad+"</td>";
-            tabla+="</tr>";
-        }
-        if(arregloCompuesto.length==0){
-            tabla="<th colspan='3'><center>No se encontraron registros</center></th>";
-        }
-        $("#tablaProductoAgregados").html(tabla);         
-    }
-   
-</script>
 
 
 <script>
-
+$(document).ready(function (){
+    
     $("button[name='btnAgregarInsumo']").click(function () {
 //         
         var id_insumo = $("input[name='Insumo']:checked").val();
@@ -791,15 +676,6 @@ foreach ($vinos as $v) {
         });
 
 
-        $("#cmbProductoCompuesto").change(function () {
-            if ($(this).val() == 1) {
-                $("#tablaProductoCompuesto").removeClass("ocultar");
-                $("#tablaProductoCompuesto").addClass("mostrar");
-            } else {
-                $("#tablaProductoCompuesto").removeClass("mostrar");
-                $("#tablaProductoCompuesto").addClass("ocultar");
-            }
-        });
 
         $("#cmbSommelier").change(function () {
 
@@ -928,6 +804,140 @@ foreach ($vinos as $v) {
     }); 
 
 </script>
+
+
+
+<!--Script para consultar listado de platillos o bebidas segun la elección del usuario-->
+<script>
+    var tope = 0;
+    $("button[name='btnAgregarCompuesto']").click(function () {
+        let eleccion = $("#cmbCompuesto option:selected").val(); //0 platillos, 1 bebidas
+        var urlAjax = "";
+        $("#tableConsulta").addClass("mostrar");
+        if (eleccion === 0) {
+        //    urlAjax = "Validaciones_Lado_Servidor/Ajax/N_A_ConsultarPlatillos.php";
+        }
+        $.ajax({
+            url: "Validaciones_Lado_Servidor/Ajax/N_A_ConsultarProductos.php",
+            type: 'POST',
+            data: {"Tipo": eleccion},
+            success: function (data) {
+                var response = data;
+                $("#divConsulta").html(response);
+                $("#tableConsulta").DataTable();
+            }
+        });
+        
+        
+    });
+    
+    
+    $("#txtTope").change(function (){
+       let cantidad = tope;
+       tope = $("#txtTope").val();
+       let mayor = ObtenerMayorCantidad();
+       if(!parseInt(tope,10)){
+           swal('Error','El valor no es numérico','error');
+           $("#txtTope").val(cantidad);   
+       }
+       
+       else if(tope < ObtenerMayorCantidad()){
+           swal('Error', 'Hay un producto con cantidad = '+mayor+' que rebasa la cantidad tope que está tratando de asignar('+tope+') por lo tanto se quedará el antiguo valor, verifique los datos e intente nuevamente');
+           $("#txtTope").val(cantidad);
+       }
+       
+       
+       
+    });
+    
+    function ObtenerMayorCantidad(){
+        
+        let cantidadMayor = 0;
+        for(let i = 0; i< arregloCompuesto.length; i++){
+            if(arregloCompuesto[i].Cantidad>cantidadMayor){
+                cantidadMayor = arregloCompuesto[i].Cantidad;
+            }
+        }
+        return cantidadMayor; 
+        
+    }
+    
+    
+    function AgregarProductoCompuesto(id, tipo,nombre){  //ID del producto, Tipo 0 = Alimento, 1 = Bebida
+       
+        
+        if(!(tope && tope>0)){
+            swal('Error','Debe asignar un tope al producto principal antes de agregar productos','error');
+            return;
+        }
+            
+        let valor = parseInt(prompt("Ingresar cantidad de productos", "0"), 10);
+        
+        if(valor && valor>0){
+            
+            if(valor <= tope){
+                let eleccion = $("#cmbCompuesto option:selected").val(); //0 platillos, 1 bebidas 
+                let alimentoCompuesto = {IdSubProducto : id, IdTipoSubProducto : tipo, Cantidad:valor, Nombre:nombre};
+                arregloCompuesto.push(alimentoCompuesto);
+                ActualizarTablaProductoCompuesto();
+                swal('Correcto','Producto agregado','success');
+            }
+            else{
+                swal('Error', 'La cantidad ingresada ('+valor+') sobrepasa el tope ('+tope+') del producto','error');
+            }
+        }
+        else{
+            swal('Error','Ingresar valor numérico entero mayor a 0','error');
+        }
+    }
+    
+    
+    function BorrarProductoCompuesto(IdTipo, IdSubProducto){
+        console.log("Id Tipo: ", IdTipo);
+        console.log("Id Sub: ", IdSubProducto);
+        for(let i = 0; i< arregloCompuesto.length; i++){
+            if(arregloCompuesto[i].IdSubProducto==IdSubProducto && arregloCompuesto[i].IdTipoSubProducto==IdTipo){
+                arregloCompuesto.splice(i,1);
+                break;
+            }
+        }
+        ActualizarTablaProductoCompuesto();
+    }
+    
+    
+    function ActualizarTablaProductoCompuesto(){
+        let tabla = "";
+        $("#txtArrayProductos").val(JSON.stringify(arregloCompuesto));
+        for(let i = 0; i<arregloCompuesto.length; i++){
+            tabla+="<tr>";   
+            tabla+="<td><a onclick=\"BorrarProductoCompuesto('"+arregloCompuesto[i].IdTipoSubProducto+"','"+arregloCompuesto[i].IdSubProducto+"')\"><span class='glyphicon glyphicon-minus-sign' style='font-size:22px; color:#AB1414; cursor:pointer'></span></a></td>";
+            
+            tabla+="<td>"+arregloCompuesto[i].Nombre+"</td>";
+            tabla+="<td>"+arregloCompuesto[i].Cantidad+"</td>";
+            tabla+="</tr>";
+        }
+        if(arregloCompuesto.length==0){
+            tabla="<th colspan='3'><center>No se encontraron registros</center></th>";
+        }
+        $("#tablaProductoAgregados").html(tabla);         
+    }
+   
+   $(document).ready(function (){
+   
+        $("#cmbProductoCompuesto").change(function () {
+            if ($(this).val() == 1) {
+                $("#tablaProductoCompuesto").removeClass("ocultar");
+                $("#tablaProductoCompuesto").addClass("mostrar");
+            } else {
+                $("#tablaProductoCompuesto").removeClass("mostrar");
+                $("#tablaProductoCompuesto").addClass("ocultar");
+            }
+        });
+   });
+   
+</script>
+
+
 
 
 </html>

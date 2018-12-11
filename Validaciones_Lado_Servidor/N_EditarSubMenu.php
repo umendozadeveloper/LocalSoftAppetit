@@ -15,12 +15,17 @@ else{
 
 
 $Id = $_POST['IdSubMenu'];
+$objSubMenu->ConsultarSubMenuPorID($Id);
 $destinoFoto = "../".$_POST['txtFotoOriginal'];
 if(isset($_FILES['archivo'])){
     if($_FILES['archivo']['name']!=""){
+        
+        if((file_exists("../".$objSubMenu->Foto))){                    
+                    unlink("../".$objSubMenu->Foto);
+        }
         $foto = $_FILES['archivo']['name'];
         $extensionFoto = explode(".", $foto);
-        $destinoFoto ="../bd_Fotos/SubMenu/".$Id."Foto.".$extensionFoto[1]."";
+        $destinoFoto ="../bd_Fotos/SubMenu/".$Id."_". rand(0, 999999)."_Foto.".$extensionFoto[1]."";
         $ruta = $_FILES['archivo']['tmp_name'];
     }
 }

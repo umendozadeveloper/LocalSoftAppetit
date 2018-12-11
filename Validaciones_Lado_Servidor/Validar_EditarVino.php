@@ -4,6 +4,7 @@ include_once '../Clases/VinosSubMenu.php';
 include_once '../Clases/SubMenu.php';
 include_once '../Clases/Platillo.php';
 include_once '../Clases/Maridaje.php';
+include_once '../Clases/ProductoCompuesto.php';
 session_start();
 $errores = array();
 function Validar($nombre, $descripcionCorta,$descripcionLarga,$precioCopa,$precioBotella){
@@ -48,7 +49,9 @@ function Validar($nombre, $descripcionCorta,$descripcionLarga,$precioCopa,$preci
 if($_POST){
     
         $objVino = new Vino();
+        
         $id = $_REQUEST['respaldoDatosP'];
+        $objVino->ConsultarPorID($id);
         $nombre = $_REQUEST['txtNombrePlatillo'];
         $nombreOriginal = $_REQUEST['respaldoDatosPNombre'];
         $descripcionCorta = $_REQUEST['txtDescripcionCorta'];
@@ -56,6 +59,8 @@ if($_POST){
         $precioCopa = $_REQUEST['txtPrecioCopa'];
         $precioBotella = $_REQUEST['txtPrecioBotella'];
         $iva = $_REQUEST['txtIVA'];
+        $compuesto = $_POST['cmbProductoCompuesto'];
+        $tope = $_POST['txtTope'];
 
         
         $banderaIco = $_REQUEST['cmbIcono'];
@@ -64,7 +69,12 @@ if($_POST){
             $icono = $_FILES['archivoIco']['name'];
             //$destinoIco = "../bd_Fotos/Vinos/".$nombre.$icono;
             $extensionIco = explode(".", $icono);
-            $destinoIco ="../bd_Fotos/Vinos/".$id."Ico.".$extensionIco[1]."";
+            
+            if((file_exists("../".$objVino->Icono))){                    
+                    unlink("../".$objVino->Icono);
+            }
+            
+            $destinoIco ="../bd_Fotos/Vinos/".$id."_". rand(0, 999999)."_Ico.".$extensionIco[1]."";
             $rutaIco = $_FILES['archivoIco']['tmp_name'];
         
 }
@@ -80,7 +90,11 @@ if($_POST){
             $foto = $_FILES['archivo']['name'];
             //$destino ="../bd_Fotos/Vinos/".$nombre.$foto;
             $extensionFoto = explode(".", $foto);
-            $destinoFoto ="../bd_Fotos/Vinos/".$id."Foto.".$extensionFoto[1]."";
+            
+            if((file_exists("../".$objVino->Foto))){                    
+                    unlink("../".$objVino->Foto);
+            }
+            $destinoFoto ="../bd_Fotos/Vinos/".$id."_". rand(0, 999999)."_Foto.".$extensionFoto[1]."";
             $rutaFoto = $_FILES['archivo']['tmp_name'];
 
         }
@@ -139,9 +153,10 @@ if($_POST){
         
         if(Validar($nombre, $descripcionCorta,$descripcionLarga,$precioCopa,$precioBotella)){
             
-            if ($objVino->ModificarVinoPorID($id,$nombre, $descripcionCorta, $descripcionLarga, $precioCopa,$precioBotella, $banderaIco, $banderaFoto, $destinoIco, $destinoFoto, $iva))
+            if ($objVino->ModificarVinoPorID($id,$nombre, $descripcionCorta, $descripcionLarga, $precioCopa,$precioBotella, $banderaIco, $banderaFoto, $destinoIco, $destinoFoto, $iva, $compuesto, $tope))
 
             {
+                
                 if($foto!=""){
                     if(copy($rutaFoto, $destinoFoto))
                         echo "";
@@ -151,7 +166,19 @@ if($_POST){
                     if(copy($rutaIco, $destinoIco))           
                             echo "";
                 }
-                array_push($mensajes, "Vino editado correctamente");
+                
+                if($compuesto==1){
+                    $arregloProductos = json_decode($_POST['txtArrayProductos']);
+                      $objProductoCompuesto = new ProductoCompuesto();
+                      if($objProductoCompuesto->borradoFisicoPorIdProducto($id, 1)){
+                            foreach($arregloProductos as $producto){
+                                $objProductoCompuesto->Insertar($id, 1, $producto->IdSubProducto, $producto->IdTipoSubProducto, $producto->Cantidad);                                
+                            }
+                      }
+                }
+           
+                
+                array_push($mensajes, "Bebida editada correctamente");
                 header("Location: ../F_A_EditarVino.php?IdVino=$id");
                 
                 
@@ -159,7 +186,7 @@ if($_POST){
             }
             else
             {
-                array_push($mensajes, "Error, el nombre de vino ya está registrado favor de introducir otro nombre");
+                array_push($mensajes, "Error, el nombre de la bebida ya está registrado favor de introducir otro nombre");
                 header("Location: ../F_A_EditarVino.php?IdVino=$id");
                 
             }

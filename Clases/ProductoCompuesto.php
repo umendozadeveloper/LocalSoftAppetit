@@ -60,11 +60,11 @@ class ProductoCompuesto {
     
     public function ConsultarPorIDProducto_IDTipo($IdProducto, $IdTipo){
         $con = Conexion();
-        $query = "SELECT CPP.IDProductoCompuesto,P.Nombre, CPP.Cantidad, 'Alimento' as Tipo FROM Platillos P JOIN ProductoCompuesto CPP
+        $query = "SELECT CPP.IDProductoCompuesto, P.Nombre, CPP.Cantidad, 'Alimento' as Tipo, CPP.IdSubProducto, CPP.IdTipoSubProducto FROM Platillos P JOIN ProductoCompuesto CPP
                     ON P.ID = CPP.IdSubProducto
                     WHERE CPP.IdProducto = $IdProducto AND CPP.IdTipoProducto = $IdTipo AND CPP.IdTipoSubProducto = 0 
                     UNION 
-                    SELECT CPV.IDProductoCompuesto,V.Nombre, CPV.Cantidad, 'Bebida' as Tipo FROM Vinos V JOIN ProductoCompuesto CPV
+                    SELECT CPV.IDProductoCompuesto, V.Nombre, CPV.Cantidad, 'Bebida' as Tipo,CPV.IdSubProducto, CPV.IdTipoSubProducto FROM Vinos V JOIN ProductoCompuesto CPV
                     ON V.ID = CPV.IdSubProducto
                     WHERE CPV.IdProducto = $IdProducto AND CPV.IdTipoProducto = $IdTipo AND CPV.IdTipoSubProducto = 1
                     ORDER BY TIPO";
@@ -76,10 +76,28 @@ class ProductoCompuesto {
             $objCompuesto->Nombre = utf8_encode($Datos ['Nombre']);
             $objCompuesto->Cantidad = utf8_encode($Datos['Cantidad']);
             $objCompuesto->Tipo = utf8_encode($Datos['Tipo']);
+            $objCompuesto->IdSubProducto = utf8_encode($Datos['IdSubProducto']);
+            $objCompuesto->IdTipoSubProducto = utf8_encode($Datos['IdTipoSubProducto']);
             array_push($productos, $objCompuesto);
         }
         
         return $productos;
+    }
+    
+    public function borradoFisicoPorIdProducto($IdProducto, $IdTipo){
+            
+            
+            $objSQL = new SQL_DML();
+        
+            $query = "DELETE FROM [ProductoCompuesto]
+                      WHERE IdProducto = $IdProducto AND IdTipoProducto = $IdTipo";
+            if($objSQL->Execute($query))
+            {
+                return true;
+            }
+            else{
+                return FALSE;
+            }
     }
 
 
@@ -95,6 +113,8 @@ class ConsultaProductoCompuesto{
     public $Cantidad;
     //Utilizadas para consultas cruzadas (No existen en la tabla)
     public $Nombre; 
-    public $Tipo;    
+    public $Tipo;  
+    public $IdSubProducto;
+    public $IdTipoSubProducto;
     //*******************************************//
 }

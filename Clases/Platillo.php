@@ -117,6 +117,7 @@ class Platillo {
             $this->ValorEstrellas = utf8_encode($Datos ['ValorEstrellas']);
             $this->IdTiempo = utf8_encode($Datos['IdTiempo']);
             $this->Compuesto = utf8_encode($Datos['Compuesto']);
+            $this->Tope = utf8_encode($Datos['Tope']);
             $res = true;
         }
         return $res;
@@ -124,11 +125,11 @@ class Platillo {
     }
 
     public function ModificarPlatilloPorID($idPlatillo,$nombre,$descripcionCorta,$descripcionLarga,
-            $precio,$banderaIcono, $banderaFoto,$icono,$foto, $iva,$id_tiempo) {
+            $precio,$banderaIcono, $banderaFoto,$icono,$foto, $iva,$id_tiempo, $tope, $compuesto) {
 
         $objSQL = new SQL_DML();
         $query = "update Platillos set Nombre = '$nombre', DescripcionCorta = '$descripcionCorta', DescripcionLarga = '$descripcionLarga',"
-                . " Precio = '$precio', Iva = '$iva', IdTiempo='$id_tiempo' ";
+                . " Precio = '$precio', Iva = '$iva', IdTiempo='$id_tiempo', Tope =  '$tope', Compuesto = '$compuesto'";
         if($banderaFoto == "Si"){
             $query.=",Foto = '$foto' ";
         }
@@ -154,6 +155,7 @@ class Platillo {
             $query = "delete from Platillos where ID ='".$this->ID."'";
             if($objSQL->Execute($query))
             {
+                $objSQL->Execute("DELETE FROM ProductoCompuesto WHERE IdProducto = $id AND IdTipoProducto = 0");
                 return true;
             }
             else{

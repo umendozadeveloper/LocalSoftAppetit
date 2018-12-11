@@ -165,8 +165,15 @@ class N_EliminarElementoCatalogo
                 break;
             case 11:#Platillos
                 $objPlatillo = new Platillo();
+                $objPlatillo->ConsultarPorID($ID);
+                
+                if((file_exists("../".$objPlatillo->Foto)) && (file_exists("../".$objPlatillo->Icono))){
+                    unlink("../".$objPlatillo->Foto);
+                    unlink("../".$objPlatillo->Icono);
+                }
+                
                 if($objPlatillo->Eliminar($ID) == TRUE)
-                {
+                {                                        
                     setSuccessMessage("El platillo fue borrado exitosamente");
                 }
                 else{
@@ -177,6 +184,13 @@ class N_EliminarElementoCatalogo
                 break;
             case 12:#Bebidas
                 $objBebida = new Vino();
+                $objBebida->ConsultarPorID($ID);
+                if((file_exists("../".$objBebida->Foto)) && (file_exists("../".$objBebida->Icono))){
+                    unlink("../".$objBebida->Foto);
+                    unlink("../".$objBebida->Icono);
+                }
+                
+                
                 if($objBebida->Eliminar($ID) == true){
                     setSuccessMessage("La bebida fue borrada exitosamente");
                 }

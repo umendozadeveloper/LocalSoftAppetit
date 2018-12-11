@@ -17,7 +17,7 @@ if ($_POST) {
         if($menu==NULL){
             $menu="";
         }
-        $destinoFoto ="../bd_Fotos/SubMenu/".$foto;
+        $destinoFoto ="../bd_Fotos/SubMenu/". rand(0, 9999999)."_".$foto;
         $rutaFoto = $_FILES['archivo']['tmp_name'];
         
         $objSubMenu = new SubMenu();

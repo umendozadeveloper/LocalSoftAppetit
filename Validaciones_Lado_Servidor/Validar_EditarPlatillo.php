@@ -5,6 +5,7 @@ include_once '../Clases/Vino.php';
 include_once '../Clases/PlatillosSubMenu.php';
 include_once '../Clases/SubMenu.php';
 include_once '../Clases/Seguridad.php';
+include_once '../Clases/ProductoCompuesto.php';
 include_once './Funciones/Mensajes_Bootstrap.php';
 
 $errores = array();
@@ -59,14 +60,21 @@ if($_POST){
         $precio = $_REQUEST['txtPrecio'];
         $iva = $_POST['txtIVA'];
         $id_tiempo = $_POST['cmbTiempo'];
+        $compuesto = $_POST['cmbProductoCompuesto'];
+        $tope  = $_POST['txtTope'];
 
-        
+        $objPlatillo = new Platillo();
+        $objPlatillo->ConsultarPorID($idOriginal);
         $banderaIco = $_REQUEST['cmbIcono'];
         if($banderaIco=="Si")
         {
             $icono = $_FILES['archivoIco']['name'];
             $extensionIco = explode(".", $icono);
-            $destinoIco ="../bd_Fotos/Platillos/".$idOriginal."Ico.".$extensionIco[1]."";
+            
+            if((file_exists("../".$objPlatillo->Icono))){                    
+                    unlink("../".$objPlatillo->Icono);
+            }
+            $destinoIco ="../bd_Fotos/Platillos/".$idOriginal."_". rand(0, 999999)."_Ico.".$extensionIco[1]."";
             $rutaIco = $_FILES['archivoIco']['tmp_name'];
         
 }
@@ -83,8 +91,11 @@ if($_POST){
             //$destinoFoto ="../bd_Fotos/Platillos/".$nombre.$foto;
             //$rutaFoto = $_FILES['archivo']['tmp_name'];
             
-            $extensionFoto = explode(".", $foto);
-            $destinoFoto ="../bd_Fotos/Platillos/".$idOriginal."Foto.".$extensionFoto[1]."";
+            $extensionFoto = explode(".", $foto);   
+            if((file_exists("../".$objPlatillo->Foto))){                    
+                    unlink("../".$objPlatillo->Foto);
+            }
+            $destinoFoto ="../bd_Fotos/Platillos/".$idOriginal."_". rand(0, 999999)."Foto.".$extensionIco[1]."";
             $rutaFoto = $_FILES['archivo']['tmp_name'];
             
         }
@@ -92,7 +103,7 @@ if($_POST){
             $destinoFoto="";
             $foto = "";
         }
-        $objPlatillo = new Platillo();
+        
         $mensajes=array();
         
         
@@ -145,9 +156,9 @@ if($_POST){
             
             if ($objPlatillo->ModificarPlatilloPorID($idOriginal,$nombre, $descripcionCorta,
                     $descripcionLarga, $precio, $banderaIco, $banderaFoto, $destinoIco,
-                    $destinoFoto, $iva, $id_tiempo))
+                    $destinoFoto, $iva, $id_tiempo, $tope, $compuesto))
             {
-                if($foto!=""){
+                if($foto!=""){                    
                     if(copy($rutaFoto, $destinoFoto))
                         echo "";
                 }
@@ -155,6 +166,16 @@ if($_POST){
                 if($icono!=""){
                     if(copy($rutaIco, $destinoIco))           
                             echo "";
+                }
+           
+                if($compuesto==1){
+                    $arregloProductos = json_decode($_POST['txtArrayProductos']);
+                      $objProductoCompuesto = new ProductoCompuesto();
+                      if($objProductoCompuesto->borradoFisicoPorIdProducto($idOriginal, 0)){
+                            foreach($arregloProductos as $producto){
+                                $objProductoCompuesto->Insertar($idOriginal, 0, $producto->IdSubProducto, $producto->IdTipoSubProducto, $producto->Cantidad);                                
+                            }
+                      }
                 }
                 setSuccessMessage("Platillo editado correctamente");
                 header("Location: ../F_A_EditarPlatillo.php?IdPlatillo=$idOriginal");

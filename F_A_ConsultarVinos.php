@@ -47,6 +47,7 @@
                                 <th><div class="centrar"><label>Visible</label></div></th>
                                 <th><div class="centrar"><label>Maridaje</label></div></th>
                                 <th><div class="centrar"><label>Menús</label></div></th>
+                                <th><div class="centrar"><label>Compuesto</label></div></th>
                                 <th><div class="centrar"><label>Opciones</label></div></th>
         </tr>
     </thead>
@@ -99,6 +100,14 @@
                         echo "<td>";
                         foreach ($subMenu_P as $sub){
                             echo "• $sub->Clave<br>";
+                        }
+                        echo "</td>";
+                        
+                        echo "<td><center>";
+                        if($v->Compuesto){
+                            echo "Sí";
+                        }else{
+                            echo "No";
                         }
                         echo "</td>";
                         

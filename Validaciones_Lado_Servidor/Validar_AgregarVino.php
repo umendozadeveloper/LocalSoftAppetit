@@ -6,6 +6,7 @@ include_once '../Clases/VinosSubMenu.php';
 include_once '../Clases/Maridaje.php';
 include_once '../Clases/Platillo.php';
 include_once './Funciones/Mensajes_Bootstrap.php';
+include_once '../Clases/ProductoCompuesto.php';
 
 $errores = array();
 function Validar($nombre, $descripcionCorta,$descripcionLarga,$precioCopa,$precioBotella,$icono,$foto){
@@ -62,6 +63,7 @@ function Validar($nombre, $descripcionCorta,$descripcionLarga,$precioCopa,$preci
 if($_POST){
     
         $objVino = new Vino();
+        $ID = $objVino->obtenerId();
         $nombre = $_REQUEST['txtNombreVino'];
         $descripcionCorta = $_REQUEST['txtDescripcionCorta'];
         $descripcionLarga = $_REQUEST['txtDescripcionLarga'];
@@ -69,15 +71,21 @@ if($_POST){
         $precioBotella = $_REQUEST['txtPrecioBotella'];
         $icono = $_FILES['archivoIco']['name'];
         $extensionIco = explode(".", $icono);
-        $destinoIco ="../bd_Fotos/Vinos/".$objVino->obtenerId()."Ico.".$extensionIco[1]."";
+        $destinoIco ="../bd_Fotos/Vinos/".$ID."_". rand(0, 999999)."_Ico.".$extensionIco[1]."";
         //$destinoIco = "../bd_Fotos/Vinos/".$nombre.$icono;
         $rutaIco = $_FILES['archivoIco']['tmp_name'];
         $foto = $_FILES['archivo']['name'];
         //$destino ="../bd_Fotos/Vinos/".$nombre.$foto;
         $extensionFoto = explode(".", $foto);
-        $destino ="../bd_Fotos/Vinos/".$objVino->obtenerId()."Foto.".$extensionFoto[1]."";
+        $destino ="../bd_Fotos/Vinos/".$ID."_".rand(0,999999)."_Foto.".$extensionFoto[1]."";
         $ruta = $_FILES['archivo']['tmp_name'];
         $iva = $_REQUEST['txtIVA'];
+        $tope = $_POST['txtTope'];
+        $banderaCompuesto = $_POST['cmbProductoCompuesto'];
+        $arregloProductos = json_decode($_POST['txtArrayProductos']);
+        $_SESSION['valArrayProductos' ] = $arregloProductos;
+        $_SESSION['valTope' ] = $tope;
+               
         
         
         //$objVino->Vino();
@@ -95,7 +103,7 @@ if($_POST){
             $_SESSION['valFoto'] = $foto;
             $_SESSION['valIVA'] = $iva;
 
-            if ($objVino->Insertar($nombre, $descripcionCorta, $descripcionLarga, $precioCopa,$precioBotella, $destinoIco, $destino, $iva))
+            if ($objVino->Insertar($nombre, $descripcionCorta, $descripcionLarga, $precioCopa,$precioBotella, $destinoIco, $destino, $iva, $banderaCompuesto, $tope))
             {
                 
                 if($foto!=""){
@@ -132,6 +140,16 @@ if($_POST){
                         }
                     }
                 }
+        
+                
+                if($banderaCompuesto==1){
+                            $objProductoCompuesto = new ProductoCompuesto();
+                            foreach($arregloProductos as $producto){
+                                $objProductoCompuesto->Insertar($objVino->ID, 1, $producto->IdSubProducto, $producto->IdTipoSubProducto, $producto->Cantidad);
+                                
+                            }
+               
+                        }
             
                 
                 $_SESSION['valNombre'] = null;

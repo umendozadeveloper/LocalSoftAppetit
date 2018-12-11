@@ -16,7 +16,8 @@ class Vino {
     public $Visible;
     public $Prioridad;
     public $Iva;
-
+    public $Compuesto;
+    public $Tope;
 
 
     /**
@@ -49,7 +50,7 @@ class Vino {
 
 
 
-    public function Insertar($nombre,$descripcionCorta,$descripcionLarga,$precioCopa,$precioBotella,$icono,$foto,$iva){
+    public function Insertar($nombre,$descripcionCorta,$descripcionLarga,$precioCopa,$precioBotella,$icono,$foto,$iva,$compuesto,$tope){
         $this->Nombre = $nombre;
         $this->DescripcionCorta = $descripcionCorta;
         $this->DescripcionLarga = $descripcionLarga;
@@ -59,6 +60,8 @@ class Vino {
         $this->Foto = $foto;
         $this->Visible = 1;
         $this->Iva = $iva;
+        $this->Compuesto = $compuesto;
+        $this->Tope = $tope;
 
         $objSQL = new SQL_DML();
         $resultado= $objSQL->GetScalar("select MAX (ID) as ID from Vinos");
@@ -66,17 +69,18 @@ class Vino {
         
         $query = "insert into Vinos ".
 
-        "(ID,Nombre,DescripcionCorta,DescripcionLarga,PrecioCopa,PrecioBotella,Icono,Foto,Visible, Iva) ".
-         "values (".$resultado.",'$this->Nombre','$this->DescripcionCorta','$this->DescripcionLarga',$this->PrecioCopa,$this->PrecioBotella,'$this->Icono','$this->Foto', $this->Visible, '$this->Iva')";
+        "(ID,Nombre,DescripcionCorta,DescripcionLarga,PrecioCopa,PrecioBotella,Icono,Foto,Visible, Iva, Compuesto, Tope) ".
+         "values (".$resultado.",'$this->Nombre','$this->DescripcionCorta','$this->DescripcionLarga',$this->PrecioCopa,$this->PrecioBotella,'$this->Icono','$this->Foto', $this->Visible, '$this->Iva', '$this->Compuesto', '$this->Tope')";
 
-        
+        echo $query;
         if($objSQL->Execute($query))
         {
             $this->ID = $resultado;
             return true;
         }
-        else
+        else{
             return FALSE;
+        }
    
     }
         
@@ -100,6 +104,8 @@ class Vino {
                 $objVino->Visible  =utf8_encode($Datos ['Visible']);
                 $objVino->Prioridad  =utf8_encode($Datos ['Prioridad']);
                 $objVino->Iva = utf8_encode($Datos['Iva']);
+                $objVino->Compuesto = utf8_encode($Datos['Compuesto']);
+                $objVino->Tope = utf8_encode($Datos['Tope']);
 
                 
                 array_push($vinos, $objVino);
@@ -126,7 +132,8 @@ class Vino {
                 $this->Visible  =utf8_encode($Datos ['Visible']);
                 $this->Prioridad  =utf8_encode($Datos ['Prioridad']);
                 $this->Iva = utf8_encode($Datos['Iva']);
-
+                $this->Compuesto = utf8_encode($Datos['Compuesto']);
+                $this->Tope = utf8_encode($Datos['Tope']);
                 $res = true;
             }
             return $res;
@@ -206,10 +213,10 @@ class Vino {
 
 
 
-    public function ModificarVinoPorID($id,$nombre,$descripcionCorta,$descripcionLarga,$precioCopa,$precioBotella,$banderaIcono, $banderaFoto,$icono,$foto, $IVA) {
+    public function ModificarVinoPorID($id,$nombre,$descripcionCorta,$descripcionLarga,$precioCopa,$precioBotella,$banderaIcono, $banderaFoto,$icono,$foto, $IVA, $compuesto, $tope) {
         $objSQL = new SQL_DML();
         $query = "update Vinos set Nombre = '$nombre', DescripcionCorta = '$descripcionCorta', DescripcionLarga = '$descripcionLarga',"
-                . " PrecioCopa = '$precioCopa', PrecioBotella = '$precioBotella', IVA = '$IVA'";
+                . " PrecioCopa = '$precioCopa', PrecioBotella = '$precioBotella', IVA = '$IVA', Compuesto = '$compuesto', Tope = '$tope'";
         if($banderaFoto == "Si"){
             $query.=",Foto = '$foto' ";
         }
@@ -311,6 +318,7 @@ class Vino {
             
             if($objSQL->Execute($query))
             {
+                $objSQL->Execute("DELETE FROM ProductoCompuesto WHERE IdProducto = $ID AND IdTipoProducto = 1");
                return TRUE; 
             }
             else{

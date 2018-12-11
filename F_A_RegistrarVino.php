@@ -10,6 +10,11 @@
           echo "<title>Registrar bebida</title>";
           ?>
 
+
+<script>
+    var arregloCompuesto = [];
+</script>
+
         <?php
         if(!empty($_SESSION['msjRegistrarVino'])){
             
@@ -54,6 +59,16 @@
                                     echo "<td><div class='campos col-xs-12 col-sm-12 col-md-12 col-lg-12 input-group'><input type='text' id='txtNombreVino'  name='txtNombreVino'    class='form-control' value='$valor'></div></td>";
                                     $_SESSION['valNombre']=null;
                                 }
+                                
+                                
+//Input producto compuesto
+if (!isset($_SESSION['valArrayProductos']) && (empty($_SESSION['valArrayProductos']))) {
+    echo "<input type='hidden' id='txtArrayProductos'  name='txtArrayProductos'    class='form-control' value=''>";
+} else {
+    $valor = json_encode($_SESSION['valArrayProductos']);
+    echo "<input type='hidden' id='txtArrayProductos'  name='txtArrayProductos'   class='form-control' value='$valor'>";
+    $_SESSION['valArrayProductos'] = null;
+}
                                 ?>
                         </tr>                        
                         
@@ -481,6 +496,65 @@
             </div>
                 </div>
                 
+
+
+
+<!-- Div producto compuesto-->
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-offset-1 col-lg-10">
+
+        <div class="etiquetas2">¿Es un producto compuesto?</div>
+        <div class='campos  '>
+            <select class="form-control" id='cmbProductoCompuesto' name="cmbProductoCompuesto">
+                <option value="0">No</option>
+                <option value="1">Si</option>
+            </select>
+        </div>
+    </div>     
+
+<!--Tabla producto compuesto-->
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-offset-1 col-lg-10 ocultar " id='tablaProductoCompuesto'>
+        <div style="width: 100%; overflow-x: auto;">
+            <table  class="table table-bordered">
+                <thead class="EncabezadoTablaPersonalizada">
+                    <tr>
+
+                        <th><a type="button" class="" style="float:left" data-toggle='modal' data-target='#VMProductoCompuesto'>
+                                <span class='glyphicon glyphicon-plus-sign' style='font-size:22px; color:#419C67; cursor:pointer'></span>
+                            </a></th>
+                        <th colspan="" style="text-align: center;">
+                            
+                            
+                        </th>
+                        <th>
+                               Tope de productos por paquete<?php
+                if (!isset($_SESSION['valTope']) && (empty($_SESSION['valTope']))) {
+
+                        echo "<div class=''><input type='text' id='txtTope'  name='txtTope'    class='form-control' value=''></div>";
+                } else {
+                    $valor = $_SESSION['valTope'];
+                    echo "<div class=''><input type='text' id='txtTope'  name='txtTope'    class='form-control' value='$valor'></div>";
+                    $_SESSION['valTope'] = null;
+                }
+                ?></th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th style="">Nombre del producto</th>
+                        <th style="text-align: center;">Cantidad tope de producto por paquete</th>    
+                    </tr>
+                </thead>
+                <tbody id="tablaProductoAgregados">
+                <th colspan="3"><center>No se encontraron registros</center></th>
+                        
+                </tbody>
+            </table>
+        </div>
+        
+        
+           
+               
+            
+    </div>
                 
             
                 
@@ -497,7 +571,65 @@
                     
                     </div>
                     
-            </form>            
+            </form> 
+
+
+<!-- Ventana Modal Para Producto Compuesto-->
+<div class="modal fade" id="VMProductoCompuesto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- 3 divs básicos  para cada ventana modal -->
+
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>AGREGAR PRODUCTOS</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+
+
+                    <div class="etiquetas2">Seleccione el tipo de producto y de clic en buscar</div>
+
+                    <div class='campos'>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10">
+                            <select class="form-control" id='cmbCompuesto' name="cmbCompuesto">
+                                <option value="0">Platillos</option>
+                                <option value="1">Bebidas</option>
+                            </select>
+
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-2">
+                            <button type="submit" id="btnAgregarCompuesto" style="float: right" name="btnAgregarCompuesto" class="btn btn-Bixa btn-ms">Buscar</button>
+                        </div>
+
+
+                    </div>
+                    <br><br><br>
+
+
+                </div> 
+                
+                <div id="divConsulta">
+
+                </div>
+        
+
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-Bixa" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
     </body>
     
     <script>
@@ -726,5 +858,137 @@
             });
             
         </script>
+        
+        
+        
+<!--Script para consultar listado de platillos o bebidas segun la elección del usuario-->
+<script>
+    var tope = 0;
+    $("button[name='btnAgregarCompuesto']").click(function () {
+        let eleccion = $("#cmbCompuesto option:selected").val(); //0 platillos, 1 bebidas
+        var urlAjax = "";
+        $("#tableConsulta").addClass("mostrar");
+        if (eleccion === 0) {
+        //    urlAjax = "Validaciones_Lado_Servidor/Ajax/N_A_ConsultarPlatillos.php";
+        }
+        $.ajax({
+            url: "Validaciones_Lado_Servidor/Ajax/N_A_ConsultarProductos.php",
+            type: 'POST',
+            data: {"Tipo": eleccion},
+            success: function (data) {
+                var response = data;
+                $("#divConsulta").html(response);
+                $("#tableConsulta").DataTable();
+            }
+        });
+        
+        
+    });
+    
+    
+    $("#txtTope").change(function (){
+       let cantidad = tope;
+       tope = $("#txtTope").val();
+       let mayor = ObtenerMayorCantidad();
+       if(!parseInt(tope,10)){
+           swal('Error','El valor no es numérico','error');
+           $("#txtTope").val(cantidad);   
+       }
+       
+       else if(tope < ObtenerMayorCantidad()){
+           swal('Error', 'Hay un producto con cantidad = '+mayor+' que rebasa la cantidad tope que está tratando de asignar('+tope+') por lo tanto se quedará el antiguo valor, verifique los datos e intente nuevamente');
+           $("#txtTope").val(cantidad);
+       }
+       
+       
+       
+    });
+    
+    function ObtenerMayorCantidad(){
+        
+        let cantidadMayor = 0;
+        for(let i = 0; i< arregloCompuesto.length; i++){
+            if(arregloCompuesto[i].Cantidad>cantidadMayor){
+                cantidadMayor = arregloCompuesto[i].Cantidad;
+            }
+        }
+        return cantidadMayor; 
+        
+    }
+    
+    
+    function AgregarProductoCompuesto(id, tipo,nombre){  //ID del producto, Tipo 0 = Alimento, 1 = Bebida
+       
+        
+        if(!(tope && tope>0)){
+            swal('Error','Debe asignar un tope al producto principal antes de agregar productos','error');
+            return;
+        }
+            
+        let valor = parseInt(prompt("Ingresar cantidad de productos", "0"), 10);
+        
+        if(valor && valor>0){
+            
+            if(valor <= tope){
+                let eleccion = $("#cmbCompuesto option:selected").val(); //0 platillos, 1 bebidas 
+                let alimentoCompuesto = {IdSubProducto : id, IdTipoSubProducto : tipo, Cantidad:valor, Nombre:nombre};
+                arregloCompuesto.push(alimentoCompuesto);
+                ActualizarTablaProductoCompuesto();
+                swal('Correcto','Producto agregado','success');
+            }
+            else{
+                swal('Error', 'La cantidad ingresada ('+valor+') sobrepasa el tope ('+tope+') del producto','error');
+            }
+        }
+        else{
+            swal('Error','Ingresar valor numérico entero mayor a 0','error');
+        }
+    }
+    
+    
+    function BorrarProductoCompuesto(IdTipo, IdSubProducto){
+        console.log("Id Tipo: ", IdTipo);
+        console.log("Id Sub: ", IdSubProducto);
+        for(let i = 0; i< arregloCompuesto.length; i++){
+            if(arregloCompuesto[i].IdSubProducto==IdSubProducto && arregloCompuesto[i].IdTipoSubProducto==IdTipo){
+                arregloCompuesto.splice(i,1);
+                break;
+            }
+        }
+        ActualizarTablaProductoCompuesto();
+    }
+    
+    
+    function ActualizarTablaProductoCompuesto(){
+        let tabla = "";
+        $("#txtArrayProductos").val(JSON.stringify(arregloCompuesto));
+        for(let i = 0; i<arregloCompuesto.length; i++){
+            tabla+="<tr>";   
+            tabla+="<td><a onclick=\"BorrarProductoCompuesto('"+arregloCompuesto[i].IdTipoSubProducto+"','"+arregloCompuesto[i].IdSubProducto+"')\"><span class='glyphicon glyphicon-minus-sign' style='font-size:22px; color:#AB1414; cursor:pointer'></span></a></td>";
+            
+            tabla+="<td>"+arregloCompuesto[i].Nombre+"</td>";
+            tabla+="<td>"+arregloCompuesto[i].Cantidad+"</td>";
+            tabla+="</tr>";
+        }
+        if(arregloCompuesto.length==0){
+            tabla="<th colspan='3'><center>No se encontraron registros</center></th>";
+        }
+        $("#tablaProductoAgregados").html(tabla);         
+    }
+   
+   $(document).ready(function (){
+   
+        $("#cmbProductoCompuesto").change(function () {
+            if ($(this).val() == 1) {
+                $("#tablaProductoCompuesto").removeClass("ocultar");
+                $("#tablaProductoCompuesto").addClass("mostrar");
+            } else {
+                $("#tablaProductoCompuesto").removeClass("mostrar");
+                $("#tablaProductoCompuesto").addClass("ocultar");
+            }
+        });
+   });
+   
+</script>
     
 </html>
