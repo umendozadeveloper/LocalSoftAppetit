@@ -18,6 +18,7 @@ class Vino {
     public $Iva;
     public $Compuesto;
     public $Tope;
+    public $DoblePresentacion;
 
 
     /**
@@ -50,7 +51,7 @@ class Vino {
 
 
 
-    public function Insertar($nombre,$descripcionCorta,$descripcionLarga,$precioCopa,$precioBotella,$icono,$foto,$iva,$compuesto,$tope){
+    public function Insertar($nombre,$descripcionCorta,$descripcionLarga,$precioCopa,$precioBotella,$icono,$foto,$iva,$compuesto,$tope, $doblePresentacion){
         $this->Nombre = $nombre;
         $this->DescripcionCorta = $descripcionCorta;
         $this->DescripcionLarga = $descripcionLarga;
@@ -62,6 +63,7 @@ class Vino {
         $this->Iva = $iva;
         $this->Compuesto = $compuesto;
         $this->Tope = $tope;
+        $this->DoblePresentacion = $doblePresentacion;
 
         $objSQL = new SQL_DML();
         $resultado= $objSQL->GetScalar("select MAX (ID) as ID from Vinos");
@@ -69,10 +71,10 @@ class Vino {
         
         $query = "insert into Vinos ".
 
-        "(ID,Nombre,DescripcionCorta,DescripcionLarga,PrecioCopa,PrecioBotella,Icono,Foto,Visible, Iva, Compuesto, Tope) ".
-         "values (".$resultado.",'$this->Nombre','$this->DescripcionCorta','$this->DescripcionLarga',$this->PrecioCopa,$this->PrecioBotella,'$this->Icono','$this->Foto', $this->Visible, '$this->Iva', '$this->Compuesto', '$this->Tope')";
+        "(ID,Nombre,DescripcionCorta,DescripcionLarga,PrecioCopa,PrecioBotella,Icono,Foto,Visible, Iva, Compuesto, Tope, DoblePresentacion) ".
+         "values (".$resultado.",'$this->Nombre','$this->DescripcionCorta','$this->DescripcionLarga',$this->PrecioCopa,'$this->PrecioBotella','$this->Icono','$this->Foto', '$this->Visible', '$this->Iva', '$this->Compuesto', '$this->Tope', '$this->DoblePresentacion')";
 
-        echo $query;
+        
         if($objSQL->Execute($query))
         {
             $this->ID = $resultado;
@@ -106,6 +108,7 @@ class Vino {
                 $objVino->Iva = utf8_encode($Datos['Iva']);
                 $objVino->Compuesto = utf8_encode($Datos['Compuesto']);
                 $objVino->Tope = utf8_encode($Datos['Tope']);
+                $objVino->DoblePresentacion = utf8_encode($Datos['DoblePresentacion']);
 
                 
                 array_push($vinos, $objVino);
@@ -134,6 +137,7 @@ class Vino {
                 $this->Iva = utf8_encode($Datos['Iva']);
                 $this->Compuesto = utf8_encode($Datos['Compuesto']);
                 $this->Tope = utf8_encode($Datos['Tope']);
+                $this->DoblePresentacion = utf8_encode($Datos['DoblePresentacion']);
                 $res = true;
             }
             return $res;
@@ -213,18 +217,19 @@ class Vino {
 
 
 
-    public function ModificarVinoPorID($id,$nombre,$descripcionCorta,$descripcionLarga,$precioCopa,$precioBotella,$banderaIcono, $banderaFoto,$icono,$foto, $IVA, $compuesto, $tope) {
-        $objSQL = new SQL_DML();
-        $query = "update Vinos set Nombre = '$nombre', DescripcionCorta = '$descripcionCorta', DescripcionLarga = '$descripcionLarga',"
-                . " PrecioCopa = '$precioCopa', PrecioBotella = '$precioBotella', IVA = '$IVA', Compuesto = '$compuesto', Tope = '$tope'";
-        if($banderaFoto == "Si"){
-            $query.=",Foto = '$foto' ";
-        }
-        if($banderaIcono == "Si"){
-            $query.=",Icono = '$icono' ";
-        }        
-        $query.=" where ID = '$id'";
-        return $objSQL->Execute($query);
+    public function ModificarVinoPorID($id,$nombre,$descripcionCorta,$descripcionLarga,$precioCopa,$precioBotella,$banderaIcono, $banderaFoto,$icono,$foto, $IVA, $compuesto, $tope, $doblePresentacion) {
+            $objSQL = new SQL_DML();
+            $query = "update Vinos set Nombre = '$nombre', DescripcionCorta = '$descripcionCorta', DescripcionLarga = '$descripcionLarga',"
+                    . " PrecioCopa = '$precioCopa', PrecioBotella = '$precioBotella', IVA = '$IVA', Compuesto = '$compuesto', Tope = '$tope', DoblePresentacion = '$doblePresentacion'";
+            if($banderaFoto == "Si"){
+                $query.=",Foto = '$foto' ";
+            }
+            if($banderaIcono == "Si"){
+                $query.=",Icono = '$icono' ";
+            }        
+            $query.=" where ID = '$id'";
+            echo $query;
+            return $objSQL->Execute($query);
         }
         
         

@@ -39,7 +39,7 @@
                     <thead style="margin-bottom: 10px;">
 		
             <tr>
-                <th style="width: 20%;"><div class="centrar"><label>Nombre de vino</label></div></th>
+                <th style="width: 20%;"><div class="centrar"><label>Nombre</label></div></th>
                     <th><div class="centrar"><label>Foto</label></div></th>
                                 <th><div class="centrar"><label>Ícono</label></div></th>
                                 <th class="ocultar"></th>

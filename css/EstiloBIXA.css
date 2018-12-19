@@ -824,3 +824,7 @@ box-shadow: 10px 10px 33px -1px rgba(0,0,0,0.75);
 .btnModificadoresModal{
     width: 100%;
 }
+
+.mostrarTableRow{
+    display: table-row;
+}

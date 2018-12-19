@@ -81,17 +81,36 @@
                             
                             
                         </tr>                        
-                        
-                        
+                        <tr>
+                            <td> <label></label></td>
+                        </tr> 
                         
                         <tr>
+                                     <td><div class="etiquetas2">¿Doble presentación? (Botella/Copa)</div></td>
+                
+                                <td><select disabled name="txtDoble" id="txtDoble" class="input-group form-control">
+                                        <option value="0" <?php if(!$objVino->DoblePresentacion){echo "selected";}?>>No</option>
+                                        <option value="1" <?php if($objVino->DoblePresentacion){echo "selected";}?>>Sí</option>
+                                    </select>
+                                </td>                                   
+                        </tr>
+                        
+                         <tr id="trPrecio">
+                            <td><div class="etiquetas2">Precio </div></td>
+                            <td colspan="4"><div class="campos"><input readonly="" type="text"  name="txtPrecio" required title="Ingresar Datos" class="form-control" value="<?php echo $objVino->PrecioBotella;?>"></div></td>
+                            
+                        </tr>        
+                       
+                        
+                        
+                        <tr id="trCopa">
                             <td><div class="etiquetas2">Precio copa</div></td>
                             <td colspan="4"><div class="campos"><input type="text" readonly=""  name="txtPrecioCopa" required title="Ingresar Datos" class="form-control" value="<?php echo $objVino->PrecioCopa;?>"></div></td>
                             
                         </tr>                        
                         
                         
-                        <tr>
+                        <tr id="trBotella">
                             <td><div class="etiquetas2">Precio botella</div></td>
                             <td colspan="4"><div class="campos"><input type="text" readonly=""  name="txtPrecioBotella" required title="Ingresar Datos" class="form-control" value="<?php echo $objVino->PrecioBotella;?>"></div></td>
                             
@@ -100,7 +119,7 @@
                             <td><div class="etiquetas2">IVA</div></td>
                             <?php 
                             
-                            echo "<td><select name='txtIVA' id='txtIVA' class='input-group form-control'>";
+                            echo "<td><select disabled name='txtIVA' id='txtIVA' class='input-group form-control'>";
                     
                     if($objVino->Iva==16)
                     {
@@ -271,5 +290,28 @@
     </body>
     
     <script>
+        function doblePresentacion(){
+                if ($("#txtDoble").val() == 1) {
+                    $("#trCopa").removeClass("ocultar");
+                    $("#trCopa").addClass("mostrarTableRow");
+                    $("#trBotella").removeClass("ocultar");
+                    $("#trBotella").addClass("mostrarTableRow");
+                    $("#trPrecio").removeClass("mostrarTableRow");
+                    $("#trPrecio").addClass("ocultar");
+                    
+                } else {
+                    $("#trCopa").removeClass("mostrarTableRow");
+                    $("#trCopa").addClass("ocultar");
+                    $("#trBotella").removeClass("mostrarTableRow");
+                    $("#trBotella").addClass("ocultar");
+                    $("#trPrecio").removeClass("ocultar");
+                    $("#trPrecio").addClass("mostrarTableRow");
+
+                }
+            }
+            
+            $(document).ready(function (){                               
+               doblePresentacion();
+            });
     </script>
 </html>

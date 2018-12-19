@@ -131,6 +131,7 @@ $ColorTextoBarra = explode(",", $objEmpresa->ColorTextoBarra);
                                 </td>
                             </tr>
                             
+                            <!--
                             <tr>
                                 <td class="campos">Logo</td>
                                 <td class="campos"><div class="imagenesTabla"><img src="<?php echo substr($objEmpresa->Logo,3);?>"></div></td>
@@ -138,7 +139,7 @@ $ColorTextoBarra = explode(",", $objEmpresa->ColorTextoBarra);
                                     <button type="button" class="btn btn-Bixa" onclick="modificarFondo(4)"><span class="glyphicon glyphicon-edit"></span></button>
                                 </td>
                             </tr>
-                            
+                            -->
                             <tr>
                                 <td class="campos">Notificación Cocina/Bar</td>
                                 <td class="campos"><div><audio class="my_audio" controls preload="none">

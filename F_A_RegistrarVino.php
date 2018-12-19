@@ -46,7 +46,7 @@
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-offset-1 col-lg-5">
                         <table>
                         <tr>
-                            <td width="20%"><div class="etiquetas2">Nombre del vino</div></td>
+                            <td width="20%"><div class="etiquetas2">Nombre de la bebida</div></td>
                 
                                 
                                 <?php
@@ -137,7 +137,34 @@ if (!isset($_SESSION['valArrayProductos']) && (empty($_SESSION['valArrayProducto
                     
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5">
                         <table>
-                        <tr>
+                            <tr >
+                                     <td><div class="etiquetas2">¿Doble presentación? (Botella/Copa)</div></td>
+                
+                                <td><select name="txtDoble" id="txtDoble" class="input-group form-control">
+                                        <option value="0">No</option>
+                                        <option value="1">Sí</option>
+                                    </select>
+                                </td>                                   
+                            </tr>
+                            
+                            <tr id="trNormal">
+                            <td width="20%"><div class="etiquetas2">Precio</div></td>
+                
+                                
+                                <?php
+                                if(!isset($_SESSION['valPrecio']) && (empty($_SESSION['valPrecio'])))
+                                {
+                                    echo "<td><div class='campos col-xs-12 col-sm-12 col-md-12 col-lg-12 input-group'><input type='text' id='txtPrecio'  name='txtPrecio'    class='form-control' value=''></div></td>";
+                                }
+                                else{
+                                    $valor = $_SESSION['valPrecio'];
+                                    echo "<td><div class='campos col-xs-12 col-sm-12 col-md-12 col-lg-12 input-group'><input type='text' id='txtPrecio'  name='txtPrecio'    class='form-control' value='$valor'></div></td>";
+                                    $_SESSION['valPrecio']=null;
+                                }
+                                ?>
+                        </tr>
+                         
+                            <tr class="ocultar" id="trBotella">
                             <td width="20%"><div class="etiquetas2">Precio por botella</div></td>
                 
                                 
@@ -154,7 +181,7 @@ if (!isset($_SESSION['valArrayProductos']) && (empty($_SESSION['valArrayProducto
                                 ?>
                         </tr>     
                         
-                        <tr>
+                        <tr class="ocultar" id="trCopa">
                             <td width="20%"><div class="etiquetas2">Precio por copa</div></td>
                 
                                 
@@ -680,6 +707,25 @@ if (!isset($_SESSION['valArrayProductos']) && (empty($_SESSION['valArrayProducto
     <script>
     $(document).ready(function(){
         
+        $("#txtDoble").change(function (){
+           if($(this).val()==1){
+            $("#trCopa").removeClass("ocultar");
+            $("#trCopa").addClass("mostrarTableRow");
+            $("#trBotella").removeClass("ocultar");
+            $("#trBotella").addClass("mostrarTableRow");
+            $("#trNormal").removeClass("mostrarTableRow");
+            $("#trNormal").addClass("ocultar");
+        }
+        else{
+            $("#trCopa").removeClass("mostrarTableRow");
+            $("#trCopa").addClass("ocultar");
+            $("#trBotella").removeClass("mostrarTableRow");
+            $("#trBotella").addClass("ocultar");
+            $("#trNormal").removeClass("ocultar");
+            $("#trNormal").addClass("mostrarTableRow");
+        }
+        });
+        
         $('#TablaInsumos').DataTable();
 
         $("#cmbMenu").change(function (){
@@ -752,7 +798,7 @@ if (!isset($_SESSION['valArrayProductos']) && (empty($_SESSION['valArrayProducto
 						required: true
 					},
 					txtDescripcionCorta: {
-						required: true
+						required: false
 
 					},
                                         
@@ -761,16 +807,29 @@ if (!isset($_SESSION['valArrayProductos']) && (empty($_SESSION['valArrayProducto
                                         },
                                         
                                         txtDescripcionLarga: {
-						required: true
+						required: false
 						
 					},
-                                        
-                                        txtPrecioBotella:{
-                                            required: true,
+                                        txtPrecio:{
+                                            required:  function() {
+                                                    return $("#txtDoble>option:selected").val() == 0;
+                                                },
                                             number:true
                                         },
+                                        
+                                        
+                                        txtPrecioBotella:{
+                                            required:  function() {
+                                                    return $("#txtDoble>option:selected").val() == 1;
+                                                },
+                                            number:true
+                                        },
+                                        
+                                        
                                         txtPrecioCopa:{
-                                            required: true,
+                                            required:   function() {
+                                                    return $("#txtDoble>option:selected").val() == 1;
+                                                },
                                             number:true
                                         },
                                         archivo:{
@@ -800,6 +859,10 @@ if (!isset($_SESSION['valArrayProductos']) && (empty($_SESSION['valArrayProducto
 						required: "Introducir descripción larga"
 						
 					},
+                                         txtPrecio:{
+                                            required: "Introducir precio",
+                                            number:"Ingresar un valor númerico aceptable"
+                                        },
                                         
                                         txtPrecioBotella:{
                                             required: "Introducir precio",
@@ -865,12 +928,8 @@ if (!isset($_SESSION['valArrayProductos']) && (empty($_SESSION['valArrayProducto
 <script>
     var tope = 0;
     $("button[name='btnAgregarCompuesto']").click(function () {
-        let eleccion = $("#cmbCompuesto option:selected").val(); //0 platillos, 1 bebidas
-        var urlAjax = "";
-        $("#tableConsulta").addClass("mostrar");
-        if (eleccion === 0) {
-        //    urlAjax = "Validaciones_Lado_Servidor/Ajax/N_A_ConsultarPlatillos.php";
-        }
+        let eleccion = $("#cmbCompuesto option:selected").val(); //0 platillos, 1 bebidas       
+        $("#tableConsulta").addClass("mostrar");       
         $.ajax({
             url: "Validaciones_Lado_Servidor/Ajax/N_A_ConsultarProductos.php",
             type: 'POST',
@@ -990,5 +1049,9 @@ if (!isset($_SESSION['valArrayProductos']) && (empty($_SESSION['valArrayProducto
    });
    
 </script>
-    
+<style>
+    .mostrarTableRow{
+        display: table-row;
+    }
+</style>    
 </html>

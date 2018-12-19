@@ -13,24 +13,11 @@ function Validar($nombre, $descripcionCorta,$descripcionLarga,$precioCopa,$preci
         {
             array_push($errores, "El número de mesas no puede estar vacío");
         }
-        if(is_null($descripcionCorta))
-        {
-            array_push($errores, "La cantidad de personas por mesa no puede estar vacía");
-        }
         
-        if(is_null($descripcionLarga))
-        {
-            array_push($errores, "El campo ubicación no puede estar vacio");
-        }
-        
-        if(is_null($precioCopa))
-        {
-            array_push($errores, "El campo ubicación no puede estar vacio");
-        }
         
         if(is_null($precioBotella))
         {
-            array_push($errores, "El campo ubicación no puede estar vacio");
+            array_push($errores, "El el precio no puede estar vacío");
         }
         
         
@@ -47,7 +34,7 @@ function Validar($nombre, $descripcionCorta,$descripcionLarga,$precioCopa,$preci
 
 
 if($_POST){
-    
+    try{
         $objVino = new Vino();
         
         $id = $_REQUEST['respaldoDatosP'];
@@ -61,6 +48,7 @@ if($_POST){
         $iva = $_REQUEST['txtIVA'];
         $compuesto = $_POST['cmbProductoCompuesto'];
         $tope = $_POST['txtTope'];
+        $doblePresentacion = $_POST['txtDoble'];
 
         
         $banderaIco = $_REQUEST['cmbIcono'];
@@ -153,7 +141,7 @@ if($_POST){
         
         if(Validar($nombre, $descripcionCorta,$descripcionLarga,$precioCopa,$precioBotella)){
             
-            if ($objVino->ModificarVinoPorID($id,$nombre, $descripcionCorta, $descripcionLarga, $precioCopa,$precioBotella, $banderaIco, $banderaFoto, $destinoIco, $destinoFoto, $iva, $compuesto, $tope))
+            if ($objVino->ModificarVinoPorID($id,$nombre, $descripcionCorta, $descripcionLarga, $precioCopa,$precioBotella, $banderaIco, $banderaFoto, $destinoIco, $destinoFoto, $iva, $compuesto, $tope,$doblePresentacion))
 
             {
                 
@@ -187,7 +175,7 @@ if($_POST){
             else
             {
                 array_push($mensajes, "Error, el nombre de la bebida ya está registrado favor de introducir otro nombre");
-                header("Location: ../F_A_EditarVino.php?IdVino=$id");
+                //header("Location: ../F_A_EditarVino.php?IdVino=$id");
                 
             }
 
@@ -198,7 +186,11 @@ if($_POST){
  //               header("Location: Login.php");
         }
         $_SESSION['msjEditarVino']=$mensajes;
+    }catch(Exception $e){
+        echo "Error: ";
+        echo $e->getMessage();
     }
+}
 ?>
     
 

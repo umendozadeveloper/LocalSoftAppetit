@@ -13,27 +13,14 @@ function Validar($nombre, $descripcionCorta,$descripcionLarga,$precioCopa,$preci
         global $errores;
         if(is_null($nombre))
         {
-            array_push($errores, "El número de mesas no puede estar vacío");
-        }
-        if(is_null($descripcionCorta))
-        {
-            array_push($errores, "La cantidad de personas por mesa no puede estar vacía");
-        }
-        
-        if(is_null($descripcionLarga))
-        {
-            array_push($errores, "El campo ubicación no puede estar vacio");
-        }
-        
+            array_push($errores, "El nombre no puede estar vacío");
+        }                
         if(is_null($precioBotella))
         {
             array_push($errores, "El campo ubicación no puede estar vacio");
         }
         
-        if(is_null($precioCopa))
-        {
-            array_push($errores, "El campo ubicación no puede estar vacio");
-        }
+       
         
         if(is_null($icono))
         {
@@ -61,14 +48,15 @@ function Validar($nombre, $descripcionCorta,$descripcionLarga,$precioCopa,$preci
 
 
 if($_POST){
-    
+        try{
         $objVino = new Vino();
         $ID = $objVino->obtenerId();
         $nombre = $_REQUEST['txtNombreVino'];
         $descripcionCorta = $_REQUEST['txtDescripcionCorta'];
         $descripcionLarga = $_REQUEST['txtDescripcionLarga'];
         $precioCopa = $_REQUEST['txtPrecioCopa'];
-        $precioBotella = $_REQUEST['txtPrecioBotella'];
+        $precioBotella = $_POST['txtPrecio'];
+        
         $icono = $_FILES['archivoIco']['name'];
         $extensionIco = explode(".", $icono);
         $destinoIco ="../bd_Fotos/Vinos/".$ID."_". rand(0, 999999)."_Ico.".$extensionIco[1]."";
@@ -81,7 +69,12 @@ if($_POST){
         $ruta = $_FILES['archivo']['tmp_name'];
         $iva = $_REQUEST['txtIVA'];
         $tope = $_POST['txtTope'];
+        $doblePresentacion = $_POST['txtDoble'];
+        if($doblePresentacion){
+            $precioBotella = $_POST['txtPrecioBotella'];    
+        }
         $banderaCompuesto = $_POST['cmbProductoCompuesto'];
+        
         $arregloProductos = json_decode($_POST['txtArrayProductos']);
         $_SESSION['valArrayProductos' ] = $arregloProductos;
         $_SESSION['valTope' ] = $tope;
@@ -102,8 +95,9 @@ if($_POST){
             $_SESSION['valIcono'] = $icono;
             $_SESSION['valFoto'] = $foto;
             $_SESSION['valIVA'] = $iva;
+            $_SESSION['valDoble'] = $doblePresentacion;
 
-            if ($objVino->Insertar($nombre, $descripcionCorta, $descripcionLarga, $precioCopa,$precioBotella, $destinoIco, $destino, $iva, $banderaCompuesto, $tope))
+            if ($objVino->Insertar($nombre, $descripcionCorta, $descripcionLarga, $precioCopa,$precioBotella, $destinoIco, $destino, $iva, $banderaCompuesto, $tope, $doblePresentacion))
             {
                 
                 if($foto!=""){
@@ -172,7 +166,7 @@ if($_POST){
                 $_SESSION['tipo'] = "error";
                 $_SESSION['titulo'] = "Error";
                 array_push($mensajes, "El nombre de vino ya está registrado, favor de ingresar otro nombre.");
-                header("Location: ../F_A_RegistrarVino.php");
+                //header("Location: ../F_A_RegistrarVino.php");
                 
             }
 
@@ -180,9 +174,14 @@ if($_POST){
         else 
         {
                 $mensajes=$errores;
-                header("Location: ../F_A_RegistrarVino.php");
+                //header("Location: ../F_A_RegistrarVino.php");
         }
         $_SESSION['msjRegistrarVino']=$mensajes;
+        }
+ catch (Exception $e){
+     echo "Error: ";
+     echo $e->getMessage();
+ }
     }
 ?>
     

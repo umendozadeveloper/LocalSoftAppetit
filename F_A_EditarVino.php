@@ -81,22 +81,10 @@
                
                $( "#form" ).validate( {
 				rules: {
-					txtNombrePlatillo: {
-						required: true
-					},
-					txtDescripcionCorta: {
-						required: true
-
-					},
-                                        
+					
                                         txtIVA:{
                                             number: true
                                         },
-                                        
-                                        txtDescripcionLarga: {
-						required: true
-						
-					},
                                         
                                         txtPrecio:{
                                             required: true,
@@ -113,23 +101,6 @@
                                         
 				},
 				messages: {
-                                        txtNombrePlatillo: {
-						required: "Introducir nombre de platillo"
-					},
-					txtDescripcionCorta: {
-						required: "Introducir descripción corta"
-
-					},
-                                        
-                                        txtDescripcionLarga: {
-						required: "Introducir descripción larga"
-						
-					},
-                                        
-                                        txtPrecio:{
-                                            required: "Introducir precio",
-                                            number:"Ingresar un valor númerico aceptable"
-                                        },
                                         
                                         txtIVA:{
                                             number: "Ingresar valor numérico"
@@ -234,7 +205,7 @@
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <table class="encabezadoTabla">
             <td class="tdEncabezadoTabla">
-                <div><h4><center><label class="textoEncabezadoTabla">Editar datos del vino: <?php echo $objVino->Nombre?></label></center></h4></div>
+                <div><h4><center><label class="textoEncabezadoTabla">Editar datos de bebida: <?php echo $objVino->Nombre?></label></center></h4></div>
             </td>
         </table>
         </div>    
@@ -245,7 +216,7 @@
                     <table class="table-hover">
                 
                         <tr>
-                            <td><div class="etiquetas2">Nombre del vino</div></td>
+                            <td><div class="etiquetas2">Nombre de bebida</div></td>
                             <td colspan="4"><div class="campos"><input type="text"  name="txtNombrePlatillo" required title="Ingresar Datos" class="form-control" value="<?php echo $objVino->Nombre;?>"></div></td>
                             
                         </tr>                        
@@ -270,15 +241,31 @@
                         </tr>                        
                         
                         
+                            <tr>
+                                     <td><div class="etiquetas2">¿Doble presentación? (Botella/Copa)</div></td>
+                
+                                <td><select name="txtDoble" id="txtDoble" class="input-group form-control">
+                                        <option value="0" <?php if(!$objVino->DoblePresentacion){echo "selected";}?>>No</option>
+                                        <option value="1" <?php if($objVino->DoblePresentacion){echo "selected";}?>>Sí</option>
+                                    </select>
+                                </td>                                   
+                            </tr>
                         
-                        <tr>
+                        
+                        <tr id="trPrecio">
+                            <td><div class="etiquetas2">Precio </div></td>
+                            <td colspan="4"><div class="campos"><input type="text"  name="txtPrecio" required title="Ingresar Datos" class="form-control" value="<?php echo $objVino->PrecioBotella;?>"></div></td>
+                            
+                        </tr>        
+                            
+                        <tr id="trCopa">
                             <td><div class="etiquetas2">Precio copa</div></td>
                             <td colspan="4"><div class="campos"><input type="text"  name="txtPrecioCopa" required title="Ingresar Datos" class="form-control" value="<?php echo $objVino->PrecioCopa;?>"></div></td>
                             
                         </tr>                        
                         
                         
-                        <tr>
+                        <tr id="trBotella">
                             <td><div class="etiquetas2">Precio botella</div></td>
                             <td colspan="4"><div class="campos"><input type="text"  name="txtPrecioBotella" required title="Ingresar Datos" class="form-control" value="<?php echo $objVino->PrecioBotella;?>"></div></td>
                             
@@ -703,6 +690,26 @@
 
                 }
             }
+            
+            function doblePresentacion(){
+                if ($("#txtDoble").val() == 1) {
+                    $("#trCopa").removeClass("ocultar");
+                    $("#trCopa").addClass("mostrarTableRow");
+                    $("#trBotella").removeClass("ocultar");
+                    $("#trBotella").addClass("mostrarTableRow");
+                    $("#trPrecio").removeClass("mostrarTableRow");
+                    $("#trPrecio").addClass("ocultar");
+                    
+                } else {
+                    $("#trCopa").removeClass("mostrarTableRow");
+                    $("#trCopa").addClass("ocultar");
+                    $("#trBotella").removeClass("mostrarTableRow");
+                    $("#trBotella").addClass("ocultar");
+                    $("#trPrecio").removeClass("ocultar");
+                    $("#trPrecio").addClass("mostrarTableRow");
+
+                }
+            }
         
             $(document).ready(function (){
                 
@@ -710,8 +717,14 @@
                 $("#cmbProductoCompuesto").change(function () {
                     mostrarTabla();
                });
+               
+               $("#txtDoble").change(function(){
+                  doblePresentacion(); 
+               });
 
+               
                mostrarTabla();
+               doblePresentacion();
             });
             </script>
     
